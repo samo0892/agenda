@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+
+{% block head %}
+    <title>{% block title %}SkyGate-Agenda{% endblock %}</title>
+{% endblock %}
+{% block body %}
+<div class="container" style="margin-top: 100px">
+    <div class="login-container">
+        <div id="output"></div>
+            <div class="avatar"></div>
+                <div class="form-box">
+
+                    <h1>SkyGateAgenda</h1>
+                    {{ form_start(form, {'attr' : {'class': 'form-center'}} ) }}
+                    {{ form_widget(form, {'attr': {'class': 'form-horizontal'}} ) }}
+                    {{ form_end(form) }}
+                </div>
+    </div>
+</div>
+
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        {{ flashMessage }}
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,28 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+    #parameter_name: value
+
+services:
+    #service_name:
+    #    class: AppBundle\Directory\ClassName
+    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    
+    app.file_uploader:
+        class: AppBundle\FileUploader
+        arguments: ['%brochures_directory%']
+        
+    app.doctrine_file_listener:
+        class: AppBundle\EventListener\FileUploadListener
+        arguments: ['@app.file_uploader']
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            
+    email_service:
+        class: AppBundle\Service\EmailService
+        arguments:
+            - "@twig"
+            - "@mailer"
+            - "%sendfrom%"
+            - "%sendto%"

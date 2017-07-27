@@ -1,0 +1,107 @@
+checkout:
+    cart:
+        headline: "Cart"
+        ov-box-headline: "Summary of Payment Modalities"
+        btn-label:
+            place-order: "Send Offer"
+
+contact.headline: "Contact"
+
+form:
+    salutation_female: "Mrs."
+    salutation_male: "Mr."
+    pleaseChoose: "Please choose..."
+    name: "Name"
+    firstName: "First name"
+    lastName: "Last name"
+    email: "Email address"
+    phone: "Phone number"
+    company: "Company"
+    businessRole: "Your role"
+    request: "Your request"
+    privacyPolicy:
+        read: "I confirm and consent to the privacy policy."
+    verification: "Verification code"
+    submit: "Submit"
+    help:
+        name: 'First name, last name'
+        phone: '+4930, +49 30 or 030 ...'
+
+rating:
+    caption: "Feedback"
+    text: "Please rate our webshop and help us to improve it. Your feedback is very much appreciated. Thank you!"
+    notice: "Your notice"
+    attention:
+        label: "How came our site to your attention?"
+        print: "Print Advertising"
+        web: "KPMG Website"
+        searchEngine: "A search engine query"
+        fair: "A fair or event"
+        recommendation: "Recommendation by KPMG"
+        recommendationBy: "Name of KPMG partner"
+        other: "Other"
+    aspects:
+        overallSatisfaction: "Overall satisfaction"
+        usability: "Usability"
+        variety: "Offerings (quality and variety)"
+        comprehensibility: "Comprehensibility"
+        processing: "Processing of your requests"
+        recommendation: "Recommendation"
+    values:
+        high:
+            least: "very low"
+            less: "rather low"
+            rather: "high"
+            most: "very high"
+        good:
+            least: "very poor"
+            less: "rather poor"
+            rather: "good"
+            most: "very good"
+        quick:
+            least: "very slow"
+            less: "rather slow"
+            rather: "quick"
+            most: "very quick"
+        probable:
+            least: "very unlikely"
+            less: "unlikely"
+            rather: "much likely"
+            most: "most likely"
+
+email:
+    contactRequest:
+        subject:
+            customer: "Your contact request to KPMG k-easy"
+            backoffice: "Customer Request by firstName lastName"
+
+
+captcha:
+    questions:
+        0: "How much is 5 + 6? (as a number)"
+        1: "How much is 3 x 7? (as a number)"
+        2: "What is the opposite of UP?"
+        3: "The opposite of left is ... ?"
+        4: "What is the opposite of summer?"
+        5: "What is the opposite of winter?"
+        6: "What is the opposite of white?"
+        7: "Is snow hot or cold?"
+        8: "Is the summer sky green or blue?"
+        9: "Is water dry or wet?"
+        10: "How many letters are there in the word 'coffee'? (as a number)"
+        11: "How many letters are there in the word 'bathtub'? (as a number)"
+        12: "What is the capital of Germany?"
+    answers:
+        0: "11"
+        1: "21"
+        2: "down"
+        3: "right"
+        4: "winter"
+        5: "summer"
+        6: "black"
+        7: "cold"
+        8: "blue"
+        9: "wet"
+        10: "6"
+        11: "7"
+        12: "Berlin"

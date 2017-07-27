@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>Bevorstehende Meetings</title>
+{% endblock %}
+
+{% block body %}
+    <script language="JavaScript" type="text/JavaScript">
+        function confirmSubmit()
+        {
+            var agree=confirm("Sind Sie sich sicher?");
+            if (agree)
+                return true ;
+            else
+                return false ;
+        }
+    </script>
+    <h2>Bevorstehende Meetings</h2>
+    {% if meetings %}
+        <table border="1" align="center" class="table table-bordered" style="margin-left: 100px">
+            <tr>
+                <th>Name</th>
+                <th>Datum</th>
+                <th>Ort</th>
+                <th>Uhrzeit</th>
+                <th>Optionen</th>
+            </tr>
+                {% for meeting in meetings %}
+                    <tr>
+                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.meetingName }}</a></td>
+                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.date|date('Y-m-d') }}</a></td>
+                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.place }}</a></td>
+                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.time|date('H:m') }}</a></td>
+                        <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.meetingId}}"><button type="button" class="btn btn-danger">Löschen</button></a>  
+                        <a href="meeting_starten?id={{meeting.meetingId}}"><button type="button" class="btn btn-success">Starten</button></a></td>
+                    </tr>
+                {% endfor %}
+        </table>        
+    {% else %}
+         <p>Es sind keine Daten vorhanden!</p>
+    {% endif %}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+    {{ flashMessage }}<br />
+{% endfor %}
+    
+    <a href="{{ path('home') }}"><button class="btn-default btn">Zurück</button></a>
+{% endblock %}

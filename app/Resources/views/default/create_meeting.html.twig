@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block head %}
+    <title>{% block title %}Meeting erstellen{% endblock %}</title>
+    {% block jquery %}
+        <script src="https://code.jquery.com/jquery-latest.js"></script>
+        <script>
+            
+        </script>
+    {% endblock %}
+    {#{% block javascript %}
+        {{ parent() }}
+        {% block javascripts '@AppBundle/Resources/public/js/form/collection.js'%}
+        <script type="text/javascript" src="{{ '' }}"></script>
+        {% endblock %}
+    {% endblock %}#}
+{% endblock %}
+
+{% block body %}
+<h2>Meeting erstellen</h2>
+<div class="container">
+    <div class="register-container">
+        <div id="output"></div>
+            <div class="avatar"></div>
+            <div class="form-box">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                 <ul id="email-fields-list" data-prototype="{{ form_row(form.agenda.vars.prototype)|e }}">
+                    {% for emailField in form.agenda %}
+                        <li>
+                            {{ form_errors(emailField) }}
+                            {{ form_widget(emailField) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <a href="#" id="add-another-email">Add another email</a>
+                {{ form_row(form.file) }}
+                {{ form_end(form) }}
+                
+                <script type="text/javascript">
+                    // keep track of how many email fields have been rendered
+                    var emailCount = '{{ form.agenda|length }}';
+
+                    jQuery(document).ready(function() {
+                        jQuery('#add-another-email').click(function(e) {
+                            e.preventDefault();
+
+                            var emailList = jQuery('#email-fields-list');
+
+                            // grab the prototype template
+                            var newWidget = emailList.attr('data-prototype');
+
+                            // replace the "__name__" used in the id and name of the prototype
+                            // with a number that's unique to your emails
+                            // end name attribute looks like name="contact[emails][2]"
+                            newWidget = newWidget.replace(/__name__/g, emailCount);
+                            emailCount++;
+
+                            // create a new list element and add it to the list
+                            var newLi = jQuery('<li></li>').html(newWidget);
+                            newLi.appendTo(emailList);
+                        });
+                    })
+                </script>
+            </div>
+    </div>
+</div>
+                
+<a href="{{ path('home') }}"><button class="btn-default btn">Zurück</button></a>
+<br />
+<br />
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+    {{ flashMessage }}<br />
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>Abgeschlossene Meetings</title>
+{% endblock %}
+
+{% block body %}
+    <script language="JavaScript" type="text/JavaScript">
+        function confirmSubmit()
+        {
+            var agree=confirm("Sind Sie sich sicher?");
+            if (agree)
+                return true ;
+            else
+                return false ;
+        }
+    </script>
+    
+    <h2>Abgeschlossene Meetings</h2>
+
+
+    {% if meetings %}
+        <table border="1" align="center" class="table table-bordered" style="margin-left: 50px; margin-right: 50px">
+            <tr>
+                <th>Name</th>
+                <th>Datum</th>
+                <th>Ort</th>
+            </tr>
+                {% for meeting in meetings %}
+                    <tr>
+                        <td><a href="completed_details?id={{meeting.meetingId}}" style="color:black">{{ meeting.meetingName }}</a></td>
+                        <td><a href="completed_details?id={{meeting.meetingId}}" style="color:black">{{ meeting.date|date('Y-m-d') }}</a></td>
+                        <td><a href="completed_details?id={{meeting.meetingId}}" style="color:black">{{ meeting.place }}</a></td>
+                        <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.meetingId}}"><button class="btn btn-danger">Löschen</button></a> 
+                            <a href="#"><button class="btn btn-info">Protokoll anzeigen</button></a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <p>Es sind keine abgeschlossene Meetings vorhanden</p>
+        </table>
+    {% endif %}
+    <a href="{{ path('home') }}"><button class="btn-default btn">Zurück</button></a>
+{% endblock %}

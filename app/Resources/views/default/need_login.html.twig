@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>{% block title %}Logout{% endblock %}</title>
+{% endblock %}    
+{% block body %}
+    <p>Sie sind ausgeloggt.</p>
+    <p>Um sich wieder einzuloggen <a href="{{ path('login') }}">HIER</a> klicken</p>
+{% endblock %}

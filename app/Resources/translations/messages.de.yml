@@ -1,0 +1,161 @@
+## cart & checkout process
+checkout:
+    cart:
+        headline: "Warenkorb"
+        ov-box-headline: "Zusammenfassung der Zahlungsmodalitäten"
+        btn-label:
+            place-order: "Zur Angebotsabgabe"
+
+headlines:
+  profile: "Mein Profil"
+  contact: "Kontakt"
+  recall: |
+      Haben Sie Fragen?
+      Wir rufen Sie zurück.
+
+de: Deutsch
+en: Englisch
+
+## generic form translations
+form:
+    required: "* Pflichtfelder"
+    salutation_female: "Frau"
+    salutation_male: "Herr"
+    password: "Passwort"
+    password_confirmation: "Passwort wiederholen"
+    pleaseChoose: "Bitte wählen Sie..."
+    preferredLanguage: "Ihre bevorzugte Sprache für die Kommunikation mit KPMG außerhalb der Plattform"
+    name: "Name"
+    firstName: "Vorname"
+    lastName: "Nachname"
+    email: "E-Mail-Adresse"
+    phone: "Telefonnummer"
+    company: "Unternehmen"
+    corporateForm: "Gesellschaftsform"
+    street: "Straße"
+    zip: "PLZ"
+    city: "Ort"
+    turnoverTaxId: "Umsatzsteuer-Identifikationsnummer"
+    capitalMarketOriented: "Kapitalmarktorientiertes Unternehmen"
+    financeControlUnderlying: "Unterliegt der Finanzaufsicht"
+    publicAuthority: "Behörde / Öffentliche Einrichtung"
+    businessRole: "Position"
+    request: "Ihre Anfrage"
+    verificationQuestion: "Bitte geben Sie zur Verifizierung die folgenden Zeichen in das Eingabefeld ein:"
+    verificationCode: "Eingabe Verifizierungscode*"
+    privacyPolicy:
+        accept: "Einverständnis zur <a href=\"%link%\">KPMG Online Datenschutzerklärung</a>."
+        read: "Ich bestätige, dass ich die Datenschutzerklärung gelesen habe."
+    verification: "Verifizierung"
+    submit: "Senden"
+    help:
+        name: 'Vorname Nachname'
+        phone: '+4930, +49 30 oder 030 ...'
+
+rating:
+    headline: "Feedback"
+    text: "Bitte bewerten Sie den Webshop nach folgenden Punkten und helfen Sie uns dabei, unser Angebot zu verbessern. Vielen Dank."
+    notice: "Ihre Anmerkungen"
+    attention:
+        label: "Wie sind Sie auf unsere Seite aufmerksam geworden?"
+        print: "Printwerbung"
+        web: "Webpräsenz"
+        searchEngine: "Suchmaschinenanfrage"
+        fair: "Messe / Event"
+        recommendation: "Empfehlung von KPMG"
+        recommendationBy: "Name KPMG Partner"
+        other: "Sonstiges"
+    aspects:
+        overallSatisfaction: "Gesamtzufriedenheit"
+        usability: "Nutzerfreundlichkeit"
+        variety: "Angebot"
+        comprehensibility: "Verständlichkeit"
+        processing: "Abwicklung"
+        recommendation: "Weiterempfehlung"
+    values:
+        high:
+            least: "sehr gering"
+            less: "gering"
+            rather: "hoch"
+            most: "sehr hoch"
+        good:
+            least: "sehr schlecht"
+            less: "schlecht"
+            rather: "gut"
+            most: "sehr gut"
+        quick:
+            least: "sehr langsam"
+            less: "langsam"
+            rather: "schnell"
+            most: "sehr schnell"
+        probable:
+            least: "sehr unwahrscheinlich"
+            less: "unwahrscheinlich"
+            rather: "eher wahrscheinlich"
+            most: "sehr wahrscheinlich"
+
+email:
+    contactRequest:
+        subject:
+            customer: "Ihre Kontaktaufnahme mit KPMG k-easy"
+            backoffice: "Kundenanfrage von firstName lastName"
+
+registration:
+    form:
+        personal_info: "Persönliche Daten"
+        invoice_recipient: "Rechungsempfänger"
+        additional_info: "Weitere notwendige Informationen"
+        passwordHint: |
+                Geben Sie mindestens 8 Zeichen ein und verwenden Sie 3 dieser Kriterien:
+                - Großbuchstaben
+                - Kleinbuchstaben
+                - Zahlen
+                - Sonderzeichen
+
+captcha:
+    questions:
+        0: "Das Ergebnis von 5 + 6 ist? (Antwort als Zahl, nicht als Wort schreiben.)"
+        1: "Das Ergebnis von 3 x 7 ist? (Antwort als Zahl, nicht als Wort schreiben.)"
+        2: "Das Gegenteil von OBEN ist?"
+        3: "Das Gegenteil von LINKS ist?"
+        4: "Was ist das Gegenteil von Sommer?"
+        5: "Was ist das Gegenteil von Winter?"
+        6: "Was ist das Gegenteil von weiß?"
+        7: "Schnee ist warm oder kalt?"
+        8: "Der Sommerhimmel ist grün oder blau?"
+        9: "Wasser ist trocken oder nass?"
+        10: "Wieviel Buchstaben hat das Wort 'Kaffee'? (Antwort als Zahl, nicht als Wort schreiben.)"
+        11: "Wieviel Buchstaben hat das Wort 'Badewanne'? (Antwort als Zahl, nicht als Wort schreiben.)"
+        12: "Wie hei&szlig;t die Hauptstadt von Deutschland?"
+    answers:
+        0: "11"
+        1: "21"
+        2: "unten"
+        3: "rechts"
+        4: "winter"
+        5: "sommer"
+        6: "schwarz"
+        7: "kalt"
+        8: "blau"
+        9: "nass"
+        10: "6"
+        11: "9"
+        12: "Berlin"
+profile:
+  headline:
+      show: 'Meine Persönlichen Daten'
+      edit: 'Persönlichen Daten ändern'
+      invoice_recipient: 'Rechnungsempfänger'
+  name_change_hint: "Um Änderungen an Ihrem Namen oder Ihrer E-Mail-Adresse vorzunehmen, kontaktieren Sie uns bitte."
+  contact: "Kontakt aufnehmen"
+  change_password: "Passwort ändern"
+  my_data: 'Persönliche Daten'
+  invoice_recipient: 'Rechnungsempfänger'
+  invoice_recipient: 'Rechnungsempfänger'
+  change: 'ändern'
+  turnoverTaxId:
+    label: 'USt.-ID.'
+  change_data: 'Persönliche Daten ändern'
+
+
+
