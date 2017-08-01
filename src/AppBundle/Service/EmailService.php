@@ -28,7 +28,7 @@ class EmailService
      * @param type $mailBody
      * @return boolean
      */
-    public function sendHtmlEmail($subject, $mailBody, $sendto/*, $tmpFolder, $fileName */)
+    public function sendHtmlEmail($subject, $mailBody, $sendto/*, $fileName*/)
     {
         $message = \Swift_Message::newInstance()
                 ->setSubject($subject)

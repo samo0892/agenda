@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/translations/messages.yml</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/translations/messages2.yml</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/translations/messages3.yml</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Command/UpdateMessagesCommand.php</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Controller/FrontendController.php</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Service/EmailService.php</file>
         </group>
     </open-files>
 </project-private>

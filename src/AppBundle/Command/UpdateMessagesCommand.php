@@ -23,7 +23,7 @@ class UpdateMessagesCommand extends ContainerAwareCommand{
             //to update all the entries with empty coordinates_saved_at columns
             ->addOption('prefix',null,InputOption::VALUE_OPTIONAL, 'The name of the file, which should be checked')
             //to skip the entries of AdditionalQualification and update only the entries of DualStudy with empty coordinates_saved_at columns
-            ->addOption('langs',null,InputOption::VALUE_OPTIONAL, 'The languages for the translation')
+            ->addOption('langs',null,InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The languages for the translation')
             //to skip the entries of DualStudy and update only the entries of AdditionalQualification with empty coordinates_saved_at columns
             ->addOption('path',null, InputOption::VALUE_OPTIONAL, 'The path to the file')
             // the "--help" option    
@@ -44,14 +44,19 @@ class UpdateMessagesCommand extends ContainerAwareCommand{
             $output->writeln('Prefix: ' .$prefix);
         }
         
-        if(!$langs){
-            $langs = "de, en";
-            $output->writeln('Langs: ' .$langs);
+        if(empty($langs)){
+            $langs = array();
+            array_push($langs, "de", "en");
+            foreach ($langs as $lang){
+                $output->writeln('Langs: ' .$lang);
+            }
         } else {
             $langs = $input->getOption('langs');
-            $output->writeln('Langs: ' .$langs);
+            foreach ($langs as $lang){
+                $output->writeln('Langs: ' .$lang);
+            }
         }
-        
+        var_dump($langs);
         if(!$path){
             $path = "app/Resources/translations/";
             $output->writeln('Path: '.$path);
@@ -60,7 +65,7 @@ class UpdateMessagesCommand extends ContainerAwareCommand{
             $output->writeln('Path: '.$path);
         }
         
-        function show_files($path, $ftype)
+        function show_files($path, $lang, $ftype)
         {
             $dir = opendir ($path);
             while (false !== ($file = readdir($dir)))
@@ -73,14 +78,18 @@ class UpdateMessagesCommand extends ContainerAwareCommand{
             return $filelist;
          }
  
-        $ergebnisDe = show_files($path,"de.yml");
-        $ergebnisEn = show_files($path, "en.yml");
+        foreach($langs as $lang){
+            $ergebnis = show_files($path,$lang, ".yml");
+//            var_dump($ergebnis);
+//            die;
+//            $ergebnisEn = show_files($path, "en.yml");
+        }
  
  
         //$output->writeln($ergebnis);
 
         $output->writeln('');
-        foreach ($ergebnisDe as $erg){
+        foreach ($ergebnis as $erg){
             $value1 = Yaml::parse(file_get_contents("app/Resources/translations/" .$erg));
             $loader = new ArrayLoader();
             $flattenedArrayDe = $loader->load($value1, "de");
@@ -90,26 +99,22 @@ class UpdateMessagesCommand extends ContainerAwareCommand{
             echo " ";
         }
         
-        $output->writeln('ENGLISCH');
-        foreach ($ergebnisEn as $erg){
-            $value2 = Yaml::parse(file_get_contents("app/Resources/translations/" .$erg));
-            $loader = new ArrayLoader();
-            $flattenedArrayEn = $loader->load($value2, "en");
-            echo "<pre>";
-            print_r($flattenedArrayEn->all());
-            echo "</pre>";
-            echo " ";
-        }
+//        $output->writeln('ENGLISCH');
+//        foreach ($ergebnisEn as $erg){
+//            $value2 = Yaml::parse(file_get_contents("app/Resources/translations/" .$erg));
+//            $loader = new ArrayLoader();
+//            $flattenedArrayEn = $loader->load($value2, "en");
+//            echo "<pre>";
+//            print_r($flattenedArrayEn->all());
+//            echo "</pre>";
+//            echo " ";
+//        }
         
-        foreach ($value1 as $val){
-            $diff = (array_diff_key($value2, $value1));
-            print_r($diff);
-            if($diff){
-                unset($diff);
-            } else {
-                echo "No DIFF!";
-            }
-        }
+//        foreach ($ergebnisEn as $erg){
+//            $diff = array_diff_key($value2, $value1);
+//            print_r($diff);
+//            unset($diff);
+//        }
 //        echo " ";
 //        $flattenedArrayEn = $loader->load($value, "en");
 //        echo "<pre>";

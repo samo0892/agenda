@@ -131,7 +131,7 @@ class FrontendController extends Controller
         
         
         $tmpFolder = 'AppBundle/tmp/';
-        //$fileName = 'meeting.ics';
+        $icsFileName = 'meeting.ics';
 
         if($userId) {
             $templatePath = 'emails/created_meeting.html.twig';
@@ -141,12 +141,12 @@ class FrontendController extends Controller
             $form = $this->createForm(CreateMeetingType::class, $meeting);
             $form->handleRequest($request);
                 
-//                dump($form);die;
+//            
 //            $meetingStartTime = $form->get('date')->getData($meeting->getDate());
 //            $location = $form->get('place')->getData($meeting->getPlace());
 //            $string = serialize($meetingStartTime);
-//            $a = date('Ymd\THis', strtotime($string));
-//            var_dump($a);die;
+////            $a = date('Ymd\THis', strtotime($string));
+////            var_dump($a);die;
 //            
 //            $icsContent = "
 //                BEGIN:VCALENDAR
@@ -169,28 +169,25 @@ class FrontendController extends Controller
 //                END:VCALENDAR"
 //            ;
 //            
-//            $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);
+//            $icfFile = $fs->dumpFile($tmpFolder.$icsFileName, $icsContent);
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $file = $form->get('file')->getData();
-                //dump($file);die;
                 $fileName = md5(uniqid()).'.'.$file->guessExtension();
                 $file = $file->move(('brochures_directory'), $fileName);
-                $filePath = $file->getRealPath();
+                $filePath = 'file:///' .$file->getRealPath();
+                $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
                 $meeting2 = $meeting->setFile($file);
-                //var_dump($file);die;
                 $em = $this->getDoctrine()->getManager();
-                //dump($meeting);die;
                 $em->persist($meeting);
                 $em->flush();
                 
                 $mailBody = $this->get('email_service')->renderHtmlMail($form, $templatePath, $filePath);
                 $mailBody .= "<a href='$filePath'>" .$fileName. "</a>";
                 $subject = "Ein neues Meeting wurde erstellt" ;
-//                $abc = "hahaha: " ;
                 $sendTo = $form->get('objective')->getData($meeting->getObjective());
                 
-                $sendThisMail = $this->get('email_service')->sendHtmlEmail($subject, $mailBody, $sendTo/*,$tmpFolder $a*/);
+                $sendThisMail = $this->get('email_service')->sendHtmlEmail($subject, $mailBody, $sendTo /*,$tmpFolder, $a */);
                 
                 if($sendThisMail){
                     $this->addFlash('notice', 'Die Mail wurde erfolgreich gesendet.');
@@ -201,9 +198,9 @@ class FrontendController extends Controller
                 //clears the form fields
                 unset($meeting);
                 unset($form);
-                //$fs->remove(array('file', $tmpFolder, $fileName));
-                $meeting = new Meeting();
                 
+                //creates a new blank form
+                $meeting = new Meeting();
                 $form = $this->createForm(CreateMeetingType::class, $meeting);
 
 
