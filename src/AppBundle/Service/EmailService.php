@@ -28,14 +28,14 @@ class EmailService
      * @param type $mailBody
      * @return boolean
      */
-    public function sendHtmlEmail($subject, $mailBody, $sendto/*, $fileName*/)
+    public function sendHtmlEmail($subject, $mailBody, $sendto, $fileName)
     {
         $message = \Swift_Message::newInstance()
                 ->setSubject($subject)
                 ->setFrom($this->sendfrom)
                 ->setTo($sendto)
-                ->setBody($mailBody);
-//                ->attach(\Swift_Attachment::fromPath($fileName));
+                ->setBody($mailBody)
+                ->attach(\Swift_Attachment::fromPath($fileName, 'text/calendar'));
         
         $mailer = $this->mailer->send($message);
         
