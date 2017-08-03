@@ -74,7 +74,7 @@ class CreateMeetingType extends AbstractType {
                 ))
                 ->add('agenda', CollectionType::class, array(
                     'entry_type' => TextType::class,
-                    'entry_options' => array('label' => false),
+//                    'entry_options' => array('label' => false),
                     'allow_add' => true,
                     'allow_delete' => true,
                     'prototype' => true,

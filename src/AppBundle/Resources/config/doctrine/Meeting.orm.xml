@@ -34,6 +34,11 @@
                 <option name="fixed"/>
             </options>
         </field>
+<!--        <field name="agenda" type="collection" column="agenda" length="10248" nullable="false">
+            <options>
+                <option name="fixed"/>
+            </options>
+        </field>-->
         <field name="isComplete" type="boolean" column="isComplete" length="1" nullable="false">
             <options>
                 <option name="fixed"/>

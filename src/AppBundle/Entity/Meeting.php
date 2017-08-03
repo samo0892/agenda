@@ -65,7 +65,7 @@ class Meeting
     private $file;
     
     /**
-     *
+     *@ORM\Column(type="array")
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $agenda;
