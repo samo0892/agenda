@@ -46,7 +46,7 @@
                 {{ form_row(form.file) }}
                 {{ form_end(form) }}
 
-                {#<script type="text/javascript">
+                <script type="text/javascript">
                     // keep track of how many email fields have been rendered
                     var emailCount = '{{ form.agenda|length }}';
 
@@ -68,7 +68,7 @@
                             var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
                             newLi.appendTo(emailList);
                         });
-                    })#}
+                    })
                 </script>
             </div>
         </div>

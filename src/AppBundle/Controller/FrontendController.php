@@ -147,15 +147,11 @@ class FrontendController extends Controller {
                 $em->flush();
                 $meetingName = $form->get('meeting_name')->getData($meeting->getMeetingName('meeting_name'));
                 $meetingStartTime = $form->get('date')->getData($meeting->getDate('date'))->format('d-m-Y');
-                ;
                 $meetingStartTime2 = $form->get('time')->getData($meeting->getTime('time'));
                 $location = $form->get('place')->getData($meeting->getPlace());
-//                $string = serialize($meetingStartTime);
-//                var_dump($meetingStartTime);
-//                print_r('');
-//                var_dump($tmpFolder);
-//                $a = date("m.d.y", strtotime($string));
-//                var_dump($a);die;
+                $agenda = $form->get('agenda')->getData($meeting->getAgenda());
+//                $agenda = (array) $agenda;   //Agenda muss noch zum Array gemacht werden und in der DB gespeichert werden!!
+                var_dump(($agenda));die;
                 $uid = rand(5, 1500);
                 $meetingStartTimestamp = date("Ymd\THis", strtotime($meetingStartTime));
 
@@ -193,7 +189,7 @@ EOF;
                 if ($sendThisMail) {
                     $this->addFlash('notice', 'Die Mail wurde erfolgreich gesendet.');
                 } else {
-                    $this->addFlash('error', 'Die konnte nicht gesendet werden!');
+                    $this->addFlash('error', 'Die Mail konnte nicht gesendet werden!');
                 }
 
                 //clears the form fields
@@ -208,11 +204,11 @@ EOF;
                 //if creating the meeting was successful
                 if ($meeting) {
                     $this->addFlash(
-                            'notice', 'Meeting wurde erfolgreich erstellt.'
+                            'notice', 'Das Meeting wurde erfolgreich erstellt.'
                     );
                 } else {
                     $this->addFlash(
-                            'error', 'Meeting konnte nicht erstellt werden!'
+                            'error', 'Das Meeting konnte nicht erstellt werden!'
                     );
                 }
             }
@@ -236,7 +232,7 @@ EOF;
 
         if ($userId) {
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meetingFromDb = $repository->findByIsComplete(NULL);
+            $meetingFromDb = $repository->findByIsComplete('0');
 
             return $this->render('default/actual_meetings.html.twig', array('meetings' => $meetingFromDb));
         } else {

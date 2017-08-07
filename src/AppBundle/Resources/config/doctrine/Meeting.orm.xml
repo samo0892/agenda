@@ -49,5 +49,10 @@
                 <option name="fixed"/>
             </options>
         </field>
+        <field name="agenda" type="string" column="agenda" length="128" nullable="false">
+            <options>
+                <option name="fixed"/>
+            </options>
+        </field>
     </entity>
 </doctrine-mapping>
