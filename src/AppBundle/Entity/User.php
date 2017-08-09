@@ -7,38 +7,38 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="SkyGateAgenda")
+ * @ORM\Table(name="user")
  */
 class User
 {
     /**
      * @var int
+     *
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
 
     /**
      * @var string
+     * 
+     * @ORM\Column(type="string", length=50)
      */
     private $user;
 
     /**
      * @var string
+     * 
+     * @ORM\Column(type="string", length=50)
      */
     private $password;
 
     /**
      * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $surname;
-
-    /**
-     * @var string
+     * 
+     * @ORM\Column(type="string", length=100)
      */
     private $email;
 
@@ -90,42 +90,6 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set name
-     *
-     * @param $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSurname()
-    {
-        return $this->surname;
-    }
-
-    /**
-     * @param $surname
-     */
-    public function setSurname($surname)
-    {
-        $this->surname = $surname;
     }
 
     /**

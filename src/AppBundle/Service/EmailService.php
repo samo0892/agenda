@@ -56,12 +56,12 @@ class EmailService
      */
     public function renderHtmlMail($form, $templatePath)
     {
-        $meeting_name = $form["meeting_name"]->getData();
+        $meeting_name = $form["name"]->getData();
         $date = $form["date"]->getData();
-        $time = $form["time"]->getData();
+        $time = $form["startTime"]->getData();
         $place = $form["place"]->getData();
-        $objective = $form["objective"]->getData();
-        $isAttending = $form["isAttending"]->getData();
+        $objective = $form["emails"]->getData();
+        $isAttending = $form["type"]->getData();
         $file = $form["file"]->getData();
         
         $params = array(

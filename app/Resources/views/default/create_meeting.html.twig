@@ -25,15 +25,16 @@
             <div class="avatar"></div>
             <div class="form-box">
                 {{ form_start(form) }}
-                {{ form_row(form.meeting_name) }}
+                {{ form_row(form.name) }}
                 {{ form_row(form.date) }}
-                {{ form_row(form.time) }}
+                {{ form_row(form.startTime) }}
+                {{ form_row(form.endTime) }}
                 {{ form_row(form.place) }}
-                {{ form_row(form.objective) }}
-                {{ form_row(form.isAttending) }}
+                {{ form_row(form.emails) }}
+                {{ form_row(form.type) }}
                 <b>Agenda</b>
-                <p id="email-fields-list" data-prototype="{{ form_widget(form.agenda.vars.prototype)|e }}">
-                    {% for emailField in form.agenda %}
+                <p id="email-fields-list" data-prototype="{{ form_widget(form.agendas.vars.prototype)|e }}">
+                    {% for emailField in form.agendas %}
                         {#{% if loop.index > 1 %}#}
                         
                             {{ form_errors(emailField) }}
@@ -42,13 +43,13 @@
 {#                        {% endif %}#}
                     {% endfor %}
                 <p>
-                <a href="#" id="add-another-email">Einen weiteren Agenda hinzufügen</a>
+                <a href="#" id="add-another-email">Einen weiteren Agendapunkt hinzufügen</a>
                 {{ form_row(form.file) }}
                 {{ form_end(form) }}
 
                 <script type="text/javascript">
                     // keep track of how many email fields have been rendered
-                    var emailCount = '{{ form.agenda|length }}';
+                    var emailCount = '{{ form.agendas|length }}';
 
                     jQuery(document).ready(function() {
                         jQuery('#add-another-email').click(function(e) {

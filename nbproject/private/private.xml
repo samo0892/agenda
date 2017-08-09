@@ -5,10 +5,12 @@
         <group>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Entity/Meeting.php</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/views/default/create_meeting.html.twig</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Form/AgendaType.php</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Form/CreateMeetingType.php</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/views/default/actual_meetings.html.twig</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Controller/FrontendController.php</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Resources/config/doctrine/Meeting.orm.xml</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Service/EmailService.php</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Entity/Agenda.php</file>
+            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/views/default/details.html.twig</file>
         </group>
     </open-files>
 </project-private>

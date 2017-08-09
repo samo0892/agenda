@@ -125,33 +125,46 @@ class FrontendController extends Controller {
         if ($userId) {
             $templatePath = 'emails/created_meeting.html.twig';
             $showForm = true;
-            $meeting->addAgenda('');
 
-            $form = $this->createForm(CreateMeetingType::class, $meeting);
+            $form = $this->createForm(CreateMeetingType::class);
             $form->handleRequest($request);
 
 
-
-
-
-
             if ($form->isSubmitted() && $form->isValid()) {
+                
+                //dump($form->getData());die;
+                
+                /*$agendaEntries = $form->get("agenda")->getData();
+                foreach ($agendaEntries as $agenda) {
+                    
+                }*/
+                $em = $this->getDoctrine()->getManager();
+                $meeting = $form->getData();
+                $agendas = $meeting->getAgendas();
+                foreach($agendas as $agenda) {
+                    $em->persist($agenda);
+                }
+                
+                //dump($meeting);die();
+                //$meeting->setAgendas($meeting['agendas']);
+                
                 $file = $form->get('file')->getData();
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
                 $file = $file->move(('brochures_directory'), $fileName);
                 $filePath = 'file:///' . $file->getRealPath();
                 $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
                 $meeting2 = $meeting->setFile($file);
-                $em = $this->getDoctrine()->getManager();
+                
                 $em->persist($meeting);
                 $em->flush();
-                $meetingName = $form->get('meeting_name')->getData($meeting->getMeetingName('meeting_name'));
-                $meetingStartTime = $form->get('date')->getData($meeting->getDate('date'))->format('d-m-Y');
-                $meetingStartTime2 = $form->get('time')->getData($meeting->getTime('time'));
-                $location = $form->get('place')->getData($meeting->getPlace());
-                $agenda = $form->get('agenda')->getData($meeting->getAgenda());
+                $meetingName = $form->get('name')->getData();
+                $meetingStartTime = $form->get('date')->getData()->format('d-m-Y');
+                $meetingStartTime2 = $form->get('startTime')->getData();
+                $location = $form->get('place')->getData();
+                //$agenda = json_encode($form->get('agenda')->getData($meeting->addAgenda('agenda'))->toArray());
+//                var_dump($agenda);die;
 //                $agenda = (array) $agenda;   //Agenda muss noch zum Array gemacht werden und in der DB gespeichert werden!!
-                var_dump(($agenda));die;
+                
                 $uid = rand(5, 1500);
                 $meetingStartTimestamp = date("Ymd\THis", strtotime($meetingStartTime));
 
@@ -182,7 +195,7 @@ EOF;
                 $mailBody = $this->get('email_service')->renderHtmlMail($form, $templatePath, $filePath);
                 $mailBody .= "<a href='$filePath'>" . $fileName . "</a>";
                 $subject = "Ein neues Meeting wurde erstellt";
-                $sendTo = $form->get('objective')->getData($meeting->getObjective());
+                $sendTo = $form->get('emails')->getData();
 
                 $sendThisMail = $this->get('email_service')->sendHtmlEmail($subject, $mailBody, $sendTo, $tmpFolder);
 

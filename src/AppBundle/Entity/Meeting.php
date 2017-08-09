@@ -8,41 +8,51 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="skygate_meetings")
+ * @ORM\Table(name="meetings")
  */
 class Meeting
 {
     /**
      * @var int
+     *
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $meeting_id;
-
+    private $id;
 
     /**
      * @var string
+     * 
+     * @ORM\Column(type="string", length=50)
      */
-    private $meeting_name;
+    private $name;
 
     /**
-     * @var date
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
      * @var time
+     * 
+     * @ORM\Column(type="time")
      */
-    private $time;
+    private $startTime;
+    
+    /**
+     * @var time
+     * 
+     * @ORM\Column(type="time")
+     */
+    private $endTime;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=50)
      */
     private $place;
-
-
-    /**
-     * @var string
-     */
-    private $objective;
 
     /**
      * @var boolean
@@ -51,51 +61,60 @@ class Meeting
     
     /**
      * @var string
+     * 
+     * @ORM\Column(type="string", length=50)
      */
-    private $isAttending;
+    private $type;
     
+    /**
+     * @var string
+     * 
+     * @ORM\Column(type="text")
+     */
     private $emails;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=255)
      *
-     * @Assert\NotBlank(message="Please, upload the product brochure as a PDF file.")
      * @Assert\File(mimeTypes={ "application/pdf" })
      */
     private $file;
     
     /**
-     *@ORM\Column(type="array")
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * A list of agendas by this meeting.
+     *
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="Agenda", mappedBy="meeting")
      */
-    private $agenda;
+    private $agendas;
     
     public function __construct() {
-        $this->agenda = new \Doctrine\Common\Collections\ArrayCollection();
+        
     }
 
     /**
      * @return int
      */
-    public function getMeetingId()
+    public function getId()
     {
-        return $this->meeting_id;
+        return $this->id;
     }
 
     /**
      * @return string
      */
-    public function getMeetingName()
+    public function getName()
     {
-        return $this->meeting_name;
+        return $this->name;
     }
 
     /**
-     * @param $meeting_name
+     * @param $name
      */
-    public function setMeetingName($meeting_name)
+    public function setName($name)
     {
-        $this->meeting_name = $meeting_name;
+        $this->name = $name;
     }
 
     /**
@@ -214,18 +233,45 @@ class Meeting
         return $this;
     }
     
-    public function getAgenda()
+    /** Returns the list of agendas
+     *
+     * @return array
+     */
+    public function getAgendas()
     {
-        return $this->agenda;
+        return $this->agendas;
     }
-    
-    public function addAgenda($agenda)
+
+    /**
+     * Set the list of agendas
+     *
+     * @param array $agendas
+     */
+    public function setAgendas($agendas)
     {
-        $this->agenda->add($agenda);
-        return $this;
+        $this->agendas = $agendas;
     }
-    
-    public function removeAgenda($agenda) {
-        $this->agenda->removeElement($agenda);
+    function getStartTime() {
+        return $this->startTime;
+    }
+
+    function getEndTime() {
+        return $this->endTime;
+    }
+
+    function getType() {
+        return $this->type;
+    }
+
+    function setStartTime($startTime) {
+        $this->startTime = $startTime;
+    }
+
+    function setEndTime($endTime) {
+        $this->endTime = $endTime;
+    }
+
+    function setType($type) {
+        $this->type = $type;
     }
 }
