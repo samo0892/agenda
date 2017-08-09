@@ -8,9 +8,7 @@
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Form/AgendaType.php</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Form/CreateMeetingType.php</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Controller/FrontendController.php</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Service/EmailService.php</file>
             <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/src/AppBundle/Entity/Agenda.php</file>
-            <file>file:/C:/xampp/htdocs/projekte/SkyGateAgenda/app/Resources/views/default/details.html.twig</file>
         </group>
     </open-files>
 </project-private>

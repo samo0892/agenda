@@ -56,6 +56,8 @@ class Meeting
 
     /**
      * @var boolean
+     * 
+     * * @ORM\Column(type="boolean")
      */
     private $isComplete;
     
@@ -85,7 +87,7 @@ class Meeting
      *
      * @var array
      *
-     * @ORM\OneToMany(targetEntity="Agenda", mappedBy="meeting")
+     * @ORM\OneToMany(targetEntity="Agenda", mappedBy="meeting", cascade={"persist"})
      */
     private $agendas;
     
@@ -131,22 +133,6 @@ class Meeting
     public function setDate($date)
     {
         $this->date = $date;
-    }
-
-    /**
-     * @return time
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param $time
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
     }
 
     /**
@@ -251,6 +237,7 @@ class Meeting
     {
         $this->agendas = $agendas;
     }
+    
     function getStartTime() {
         return $this->startTime;
     }

@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use AppBundle\Entity\Agenda;
 
 class AgendaType extends AbstractType
@@ -20,7 +21,7 @@ class AgendaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('name', TextType::class, array('label' => 'Thema des Meetings',
+                ->add('name', TextType::class, array('label' => 'Agendapunkt',
                 'constraints' => array(
                     new Assert\NotBlank(array(
                         'message' => 'Feld darf nicht leer nicht sein'
@@ -28,13 +29,22 @@ class AgendaType extends AbstractType
                 )
             ))
                 
-                ->add('minutes', IntegerType::class, array('label' => 'Uhrzeit',
-                'constraints' => array(
-                    new Assert\NotBlank(array(
-                        'message' => 'Feld darf nicht leer nicht sein'
-                    ))
-                )
-            ));
+                ->add('minutes',ChoiceType::class, array('label' => 'Dauer in Minuten',
+                    'choices'  => array(
+                        '5' => '5',
+                        '10' => '10',
+                        '15' => '15',
+                        '20' => '20',
+                        '25' => '25',
+                        '25' => '30',
+                        '25' => '35',
+                        '25' => '40',
+                        '25' => '45',
+                        '25' => '50',
+                        '25' => '55',
+                        '25' => '60',
+                    ),
+                ));
     }
     
     public function configureOptions(OptionsResolver $resolver) {

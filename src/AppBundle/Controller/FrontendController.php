@@ -245,7 +245,7 @@ EOF;
 
         if ($userId) {
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meetingFromDb = $repository->findByIsComplete('0');
+            $meetingFromDb = $repository->findByIsComplete(NULL);
 
             return $this->render('default/actual_meetings.html.twig', array('meetings' => $meetingFromDb));
         } else {
@@ -350,18 +350,19 @@ EOF;
 
         if ($userId) {
             $meetings = $repo->findAll();
-            $meeting = $repo->findOneBy(['meeting_id' => $_GET['id']]);
+            $meeting = $repo->findOneBy(['id' => $_GET['id']]);
             $em = $this->getDoctrine()->getManager();
 //            s$fileName = $form->get('file')->setData($meeting->getFile());
 //            dump($fileName);die;
 
             if ($meeting) {
-                $form->get('meeting_name')->setData($meeting->getMeetingName());
+                $form->get('name')->setData($meeting->getName());
                 $form->get('date')->setData($meeting->getDate());
-                $form->get('time')->setData($meeting->getTime());
+                $form->get('startTime')->setData($meeting->getStarttime());
+                $form->get('endTime')->setData($meeting->getEndtime());
                 $form->get('place')->setData($meeting->getPlace());
-                $form->get('objective')->setData($meeting->getObjective());
-                $form->get('isAttending')->setData($meeting->getIsAttending());
+                $form->get('emails')->setData($meeting->getEmails());
+                $form->get('type')->setData($meeting->getType());
 //                $form->get('file')->setData($meeting->getFile());
             }
             $form->handleRequest($request);
@@ -378,11 +379,13 @@ EOF;
                     return $this->render('default/details.html.twig', array('form' => $form->createView(), 'user' => $user));
                 } else {
                     $newData = $meeting;
-                    $newData->setMeetingName($form->get('meeting_name')->getData());
+                    $newData->setName($form->get('name')->getData());
                     $newData->setDate($form->get('date')->getData());
+                    $newData->setStarttime($form->get('startTime')->getData());
+                    $newData->setEndtime($form->get('endTime')->getData());
                     $newData->setPlace($form->get('place')->getData());
-                    $newData->setObjective($form->get('objective')->getData());
-                    $newData->setIsAttending($form->get('isAttending')->getData());
+                    $newData->setObjective($form->get('emails')->getData());
+                    $newData->setIsAttending($form->get('type')->getData());
                     $newData->setFile($form->get('file')->getData());
 
                     $em = $this->getDoctrine()->getManager();

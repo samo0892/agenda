@@ -58,7 +58,8 @@ class EmailService
     {
         $meeting_name = $form["name"]->getData();
         $date = $form["date"]->getData();
-        $time = $form["startTime"]->getData();
+        $startTime = $form["startTime"]->getData();
+        $endTime = $form["endTime"]->getData();
         $place = $form["place"]->getData();
         $objective = $form["emails"]->getData();
         $isAttending = $form["type"]->getData();
@@ -67,10 +68,11 @@ class EmailService
         $params = array(
             'meeting_name' => $meeting_name,
             'date' => $date,
-            'time' => $time,
+            'startTime' => $startTime,
+            'endTime' => $endTime,
             'place' => $place,
             'objective' => $objective,
-            'isAttending' => $isAttending,
+            'type' => $isAttending,
             'file' => $file
         );
         

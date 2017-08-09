@@ -4,8 +4,10 @@
         <p>Sie wurden zu einem neuen Meetign eingeladen.</p>
         <br />
         <p>Thema des Meetings: <b>{{ meeting_name }}</b></p>
+        <p>Art des Meetings: <b>{{ type }}</b></p>
         <p>Datum des Meetings: <b>{{ date|date('Y-m-d') }}</b></p>
-        <p>Uhrzeit des Meetings: <b>{{ time|date('H:m') }}</b></p>
+        <p>Startzeit des Meetings: <b>{{ startTime|date('H:m') }}</b></p>
+        <p>Endzeit des Meetings: <b>{{ endTime|date('H:m') }}</b></p>
         <p>Ort: <b>{{ place }}</b></p>
         <p>Vorlagen für das Meeting: </p>
 {#        {{ filePath }}#}

@@ -27,12 +27,12 @@
             </tr>
                 {% for meeting in meetings %}
                     <tr>
-                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.meetingName }}</a></td>
-                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.date|date('Y-m-d') }}</a></td>
-                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.place }}</a></td>
-                        <td><a href="details?id={{meeting.meetingId}}" style="color:black">{{ meeting.time|date('H:m') }}</a></td>
-                        <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.meetingId}}"><button type="button" class="btn btn-danger">Löschen</button></a>  
-                        <a onclick="return confirmSubmit()" href="meeting_starten?id={{meeting.meetingId}}"><button type="button" class="btn btn-success">Starten</button></a></td>
+                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.name }}</a></td>
+                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.date|date('Y-m-d') }}</a></td>
+                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.place }}</a></td>
+                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.startTime|date('H:m') }}</a></td>
+                        <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.id}}"><button type="button" class="btn btn-danger">Löschen</button></a>  
+                        <a onclick="return confirmSubmit()" href="meeting_starten?id={{meeting.id}}"><button type="button" class="btn btn-success">Starten</button></a></td>
                     </tr>
                 {% endfor %}
         </table>        

@@ -37,7 +37,7 @@ class Agenda
 
     /**
      * @var Meeting     
-     * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="agendas", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="agendas")
      * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id", onDelete="set null")
      */
     private $meeting;

@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use AppBundle\Entity\Meeting;
 use AppBundle\Form\AgendaType;
 
@@ -73,12 +74,13 @@ class CreateMeetingType extends AbstractType {
                                 ))
                     )
                 ))
-                ->add('type', TextType::class, array('label' => 'Art des Meetings',
-                    'constraints' => array(
-                        new Assert\NotBlank(array(
-                            'message' => 'Feld darf nicht leer sein'
-                                ))
-                    )
+                ->add('type',ChoiceType::class, array(
+                    'choices'  => array(
+                        'Sitzung' => 'Sitzung',
+                        'Telefonkonferenz' => 'Telefonkonferenz',
+                        'Videokonferenz' => 'Videokonferenz',
+                        'Stehung' => 'Stehung'
+                    ),
                 ))
                 ->add('agendas', CollectionType::class, array(
                     'entry_type' => AgendaType::class,

@@ -17,12 +17,13 @@
                         <div class="form-box">
                             <h2>Details des Meetings</h2>    
                             {{ form_start(form) }}
-                            {{ form_row(form.meeting_name) }}
+                            {{ form_row(form.name) }}
                             {{ form_row(form.date) }}
-                            {{ form_row(form.time) }}
+                            {{ form_row(form.startTime) }}
+                            {{ form_row(form.endTime) }}
                             {{ form_row(form.place) }}
-                            {{ form_row(form.objective) }}
-                            {{ form_row(form.isAttending) }}
+                            {{ form_row(form.emails) }}
+                            {{ form_row(form.type) }}
                             {{ form_row(form.file) }}
                             {{ form_end(form) }}<br /><br />
                             <a href="{{ path('actual_meetings') }}"><button class="btn-default btn">Zurück</button></a>
