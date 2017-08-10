@@ -116,9 +116,6 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
         $fs = new Filesystem();
 
-
-
-
         $icsFileName = 'meeting.ics';
         $tmpFolder = ($_SERVER["DOCUMENT_ROOT"] . '/AppBundle/tmp/' . $icsFileName);
 
@@ -140,34 +137,35 @@ class FrontendController extends Controller {
                 }*/
                 $em = $this->getDoctrine()->getManager();
                 $meeting = $form->getData();
-                $agendas = $meeting->getAgendas();
-                foreach($agendas as $agenda) {
-                    $em->persist($agenda);
-                }
                 
-                //dump($meeting);die();
-                //$meeting->setAgendas($meeting['agendas']);
+                $agendas = $meeting->getAgendas();
                 
                 $file = $form->get('file')->getData();
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
                 $file = $file->move(('brochures_directory'), $fileName);
                 $filePath = 'file:///' . $file->getRealPath();
                 $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
-                $meeting2 = $meeting->setFile($file);
+                $meeting->setFile($file);
                 
                 $em->persist($meeting);
                 $em->flush();
+
+                foreach($agendas as $agenda) {
+                    $agenda->setMeeting($meeting);
+                    $em->persist($agenda);
+                }
+                $em->flush();
+                
+                $this->addFlash('notice', 'Das Meeting wurde erfolgreich erstellt.');
+                
                 $meetingName = $form->get('name')->getData();
-                $meetingStartTime = $form->get('date')->getData()->format('d-m-Y');
-                $meetingStartTime2 = $form->get('startTime')->getData();
+                $meetingStartTime = $form->get('date')->getData()->format("d-m-Y'T'HHmmss");
+                $meetingEndTime = $form->get('date')->getData()->format("d-m-Y'T'HHmmss");
                 $location = $form->get('place')->getData();
-                //$agenda = json_encode($form->get('agenda')->getData($meeting->addAgenda('agenda'))->toArray());
-//                var_dump($agenda);die;
-//                $agenda = (array) $agenda;   //Agenda muss noch zum Array gemacht werden und in der DB gespeichert werden!!
                 
                 $uid = rand(5, 1500);
                 $meetingStartTimestamp = date("Ymd\THis", strtotime($meetingStartTime));
-
+                $meetingEndTimestamp = date("Ymd\THis", strtotime($meetingEndTime));
                 $icsContent = <<<EOF
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -175,7 +173,7 @@ CALSCALE:GREGORIAN
 METHOD:REQUEST
 BEGIN:VEVENT
 DTSTART:$meetingStartTimestamp
-DTSTAMP:$meetingStartTimestamp
+DTSTAMP:$meetingEndTimestamp
 ORGANIZER;CN=XYZ:mailto:do-not-reply@example.com
 UID:$uid
 ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP= TRUE;CN=Sample:emailaddress@testemail.com
@@ -192,27 +190,25 @@ EOF;
                 ;
                 $icfFile = $fs->dumpFile($tmpFolder, $icsContent);
 
-                $mailBody = $this->get('email_service')->renderHtmlMail($form, $templatePath, $filePath);
-                $mailBody .= "<a href='$filePath'>" . $fileName . "</a>";
-                $subject = "Ein neues Meeting wurde erstellt";
-                $sendTo = $form->get('emails')->getData();
-
-                $sendThisMail = $this->get('email_service')->sendHtmlEmail($subject, $mailBody, $sendTo, $tmpFolder);
-
+                $sendThisMail = $this->get('email_service')
+                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath, $fileName);
+                
                 if ($sendThisMail) {
                     $this->addFlash('notice', 'Die Mail wurde erfolgreich gesendet.');
                 } else {
                     $this->addFlash('error', 'Die Mail konnte nicht gesendet werden!');
                 }
 
+                return $this->redirectToRoute('actual_meetings');
+                
+                /*
                 //clears the form fields
                 unset($meeting);
                 unset($form);
 
                 //creates a new blank form
-                $meeting = new Meeting();
-                $form = $this->createForm(CreateMeetingType::class, $meeting);
-
+                //$meeting = new Meeting();
+                //$form = $this->createForm(CreateMeetingType::class, $meeting);
 
                 //if creating the meeting was successful
                 if ($meeting) {
@@ -224,6 +220,7 @@ EOF;
                             'error', 'Das Meeting konnte nicht erstellt werden!'
                     );
                 }
+                */
             }
 
             return $this->render('default/create_meeting.html.twig', array(
@@ -245,7 +242,7 @@ EOF;
 
         if ($userId) {
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meetingFromDb = $repository->findByIsComplete(NULL);
+            $meetingFromDb = $repository->findByIsComplete('0');
 
             return $this->render('default/actual_meetings.html.twig', array('meetings' => $meetingFromDb));
         } else {
@@ -311,7 +308,7 @@ EOF;
         $previousUrl = $request->headers->get('referer');
 
         if ($userId) {
-            $meeting = $repo->findOneBy(['meeting_id' => $_GET['id']]);
+            $meeting = $repo->findOneBy(['id' => $_GET['id']]);
             $em = $this->getDoctrine()->getManager();
 
             $em->remove($meeting);
@@ -443,6 +440,5 @@ EOF;
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
-    }
-
+    }    
 }

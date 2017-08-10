@@ -15,7 +15,11 @@
                 return false ;
         }
     </script>
+    
     <h2>Bevorstehende Meetings</h2>
+    
+    {% include 'default/flash_messages.html.twig' %}
+    
     {% if meetings %}
         <table border="1" align="center" class="table table-bordered" style="margin-left: 100px">
             <tr>
@@ -39,9 +43,5 @@
     {% else %}
          <p>Es sind keine Daten vorhanden!</p>
     {% endif %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-    {{ flashMessage }}<br />
-{% endfor %}
     
-    <a href="{{ path('home') }}"><button class="btn-default btn">Zurück</button></a>
 {% endblock %}

@@ -30,14 +30,18 @@ class EmailService
      */
     public function sendHtmlEmail($subject, $mailBody, $sendto, $fileName)
     {
-        $message = \Swift_Message::newInstance()
-                ->setSubject($subject)
-                ->setFrom($this->sendfrom)
-                ->setTo($sendto)
-                ->setBody($mailBody)
-                ->attach(\Swift_Attachment::fromPath($fileName, 'text/calendar'));
+        $recipients = preg_split("/[;,]+/", $sendto);
         
-        $mailer = $this->mailer->send($message);
+        foreach ($recipients as $recipient) {
+            $message = \Swift_Message::newInstance()
+                    ->setSubject($subject)
+                    ->setFrom($this->sendfrom)
+                    ->setTo($recipient)
+                    ->setBody($mailBody)
+                    ->attach(\Swift_Attachment::fromPath($fileName, 'text/calendar'));
+
+            $mailer = $this->mailer->send($message);
+        }
         
         //checks if the mail is successful sent
         if($mailer){
@@ -83,6 +87,17 @@ class EmailService
                 'text/html');
         
         return $mailBody;
+    }
+    
+    public function sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath, $fileName) {
+        $mailBody = $this->renderHtmlMail($form, $templatePath, $filePath);
+        $mailBody .= "<a href='$filePath'>" . $fileName . "</a>";
+        $subject = "Ein neues Meeting wurde erstellt";
+        $sendTo = $form->get('emails')->getData();
+
+        $sendThisMail = $this->sendHtmlEmail($subject, $mailBody, $sendTo, $tmpFolder);
+        
+        return $sendThisMail;
     }
 }
 

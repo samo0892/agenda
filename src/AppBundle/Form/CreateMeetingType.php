@@ -67,7 +67,7 @@ class CreateMeetingType extends AbstractType {
                                 ))
                     )
                 ))
-                ->add('emails', EmailType::class, array('label' => 'Teilnehmer',
+                ->add('emails', TextType::class, array('label' => 'Teilnehmer',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'

@@ -19,6 +19,9 @@
 
 {% block body %}
     <h2>Meeting erstellen</h2>
+    
+    {% include 'default/flash_messages.html.twig' %}
+    
     <div class="container">
         <div class="register-container">
             <div id="output"></div>
@@ -70,26 +73,9 @@
                         });
                     })
                 </script>
+                
+                
             </div>
         </div>
     </div>
-
-    <a href="{{ path('home') }}"><button class="btn-default btn">Zurück</button></a>
-    <br />
-    <br />
-
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="alert alert-success" role="alert">
-            <div class="flash-notice">
-                {{ flashMessage }}<br />
-            </div>
-        </div>
-    {% endfor %}
-    {% for flashMessage in app.session.flashbag.get('error') %}
-        <div class="alert alert-danger" role="alert">
-            <div class="flash-notice">
-                {{ flashMessage }}<br />
-            </div>
-        </div>
-    {% endfor %}
 {% endblock %}

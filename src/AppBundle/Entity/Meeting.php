@@ -59,7 +59,7 @@ class Meeting
      * 
      * * @ORM\Column(type="boolean")
      */
-    private $isComplete;
+    private $isComplete = '0';
     
     /**
      * @var string
