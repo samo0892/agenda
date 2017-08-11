@@ -40,6 +40,7 @@ class CreateMeetingType extends AbstractType {
                     'placeholder' => array(
                         'day' => 'Tag', 'month' => 'Monat', 'year' => 'Jahr'
                     ),
+                    'format' => 'ddMMyyyy',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'
@@ -74,7 +75,7 @@ class CreateMeetingType extends AbstractType {
                                 ))
                     )
                 ))
-                ->add('type',ChoiceType::class, array(
+                ->add('type',ChoiceType::class, array('label' => 'Art des Meetings',
                     'choices'  => array(
                         'Sitzung' => 'Sitzung',
                         'Telefonkonferenz' => 'Telefonkonferenz',
@@ -84,20 +85,15 @@ class CreateMeetingType extends AbstractType {
                 ))
                 ->add('agendas', CollectionType::class, array(
                     'entry_type' => AgendaType::class,
-//                    'entry_options' => array('label' => false),
                     'allow_add' => true,
                     'allow_delete' => true,
                     'prototype' => true,
                 ))
-                ->add('file', FileType::class, array('label' => 'Datei hinzufügen'))
-
-//            ->add('isAttending', ChoiceType::class, array('label' => 'Art des Meetings',
-//                'choices'  => array(
-//                    'Sitzung' => 'Null',
-//                    'Telefonkonferenz' => 'true',
-//                    'Videokonferenz' => 'false',
-//                )
-//            ))    
+                ->add('file', FileType::class, array('label' => 'Datei hinzufügen',
+                    'required' => false,
+//                    'multiple' => true,
+                ))
+   
                 ->add('save', SubmitType::class, array('label' => 'Meeting erstellen'));
     }
 

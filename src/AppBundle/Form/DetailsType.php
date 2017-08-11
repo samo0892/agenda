@@ -29,6 +29,7 @@ class DetailsType extends AbstractType
                 'placeholder' => array(
                     'day' => 'Tag', 'month' => 'Monat', 'year' => 'Jahr'
                 ),
+                'format' => 'ddMMyyyy',
                 'constraints' => array(
                     new Assert\NotBlank(array(
                         'message' => 'Feld darf nicht leer nicht sein'
@@ -76,7 +77,7 @@ class DetailsType extends AbstractType
                 )
             ))
                 
-            ->add('file', FileType::class, array('label' => 'Datei',
+            ->add('file', TextType::class, array('label' => 'Datei',
                 'constraints' => array(
                     new Assert\NotBlank(array(
                         'message' => 'Feld darf nicht leer sein'

@@ -32,7 +32,7 @@
                 {% for meeting in meetings %}
                     <tr>
                         <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.name }}</a></td>
-                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.date|date('Y-m-d') }}</a></td>
+                        <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.date|date('d-m-Y') }}</a></td>
                         <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.place }}</a></td>
                         <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.startTime|date('H:m') }}</a></td>
                         <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.id}}"><button type="button" class="btn btn-danger">Löschen</button></a>  

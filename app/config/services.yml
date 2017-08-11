@@ -26,3 +26,9 @@ services:
             - "@mailer"
             - "%sendfrom%"
             - "%sendto%"
+            
+    ics_file_service:
+        class: AppBundle\Service\IcsFileService
+        
+    detail_service:
+        class: AppBundle\Service\DetailService

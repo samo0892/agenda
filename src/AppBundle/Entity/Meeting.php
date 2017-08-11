@@ -78,7 +78,7 @@ class Meeting
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Assert\File(mimeTypes={ "application/pdf" })
+     * @Assert\File
      */
     private $file;
     

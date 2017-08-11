@@ -15,7 +15,7 @@ class CompletedDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {        
         $builder
-                ->add('meeting_name', TextType::class, array('label' => 'Thema des Meetings',
+                ->add('name', TextType::class, array('label' => 'Thema des Meetings',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer sein'
@@ -34,7 +34,15 @@ class CompletedDetailsType extends AbstractType
                     )
                 ))
                 
-                ->add('time', TimeType::class, array('label' => 'Uhrzeit',
+                ->add('startTime', TimeType::class, array('label' => 'Startzeit',
+                    'constraints' => array(
+                        new Assert\NotBlank(array(
+                            'message' => 'Feld darf nicht leer nicht sein'
+                        ))
+                    )
+                ))
+                
+                ->add('endTime', TimeType::class, array('label' => 'Endzeit',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'
@@ -50,7 +58,7 @@ class CompletedDetailsType extends AbstractType
                 )
             ))
 
-            ->add('objective', EmailType::class, array('label' => 'Teilnehmer',
+            ->add('emails', EmailType::class, array('label' => 'Teilnehmer',
                 'constraints' => array(
                     new Assert\NotBlank(array(
                         'message' => 'Feld darf nicht leer nicht sein'
@@ -58,7 +66,7 @@ class CompletedDetailsType extends AbstractType
                 )
             ))
                 
-            ->add('isAttending', TextType::class, array('label' => 'Art des Meetings',
+            ->add('type', TextType::class, array('label' => 'Art des Meetings',
                 'constraints' => array(
                     new Assert\NotBlank(array(
                         'message' => 'Feld darf nicht leer sein'

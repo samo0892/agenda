@@ -35,9 +35,9 @@ class File
      */
     private $path;
 
-    /**
+   /**
      * @var Meeting     
-     * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="agendas")
+     * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="file")
      * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id", onDelete="set null")
      */
     private $meeting;
