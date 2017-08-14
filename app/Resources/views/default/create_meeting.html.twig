@@ -35,6 +35,7 @@
                 {{ form_row(form.place) }}
                 {{ form_row(form.emails) }}
                 {{ form_row(form.type) }}
+                {{ form_row(form.description) }}
                 <p id="email-fields-list" data-prototype="{{ form_widget(form.agendas.vars.prototype)|e }}">
                     {% for emailField in form.agendas %}
                         {#{% if loop.index > 1 %}#}

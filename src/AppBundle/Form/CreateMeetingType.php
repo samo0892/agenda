@@ -13,9 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -71,7 +71,7 @@ class CreateMeetingType extends AbstractType {
                 ->add('emails', TextType::class, array('label' => 'Teilnehmer',
                     'constraints' => array(
                         new Assert\NotBlank(array(
-                            'message' => 'Feld darf nicht leer nicht sein'
+                            'message' => 'Feld darf nicht leer sein'
                                 ))
                     )
                 ))
@@ -83,11 +83,19 @@ class CreateMeetingType extends AbstractType {
                         'Stehung' => 'Stehung'
                     ),
                 ))
+                ->add('description', TextareaType::class, array('label' => 'Beschreibung des Meetings',
+                    'constraints' => array(
+                        new Assert\NotBlank(array(
+                            'message' => 'Feld darf nicht leer sein'
+                        ))
+                    )
+                ))
                 ->add('agendas', CollectionType::class, array(
                     'entry_type' => AgendaType::class,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'prototype' => true,
+                    'label' => false,
                 ))
                 ->add('file', FileType::class, array('label' => 'Datei hinzufügen',
                     'required' => false,

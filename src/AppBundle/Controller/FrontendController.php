@@ -16,6 +16,13 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class FrontendController extends Controller {
+    
+    /**
+     * @Route("/test", name="test")
+     */
+    public function testAction() {
+        return $this->render('default/aaa.html.twig');
+    }
 
     /**
      * @Route("/", name="homepage")
@@ -245,12 +252,23 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
 
         if ($userId) {
-            $meeting = new Meeting();
+//            $meeting = new Meeting();
+//            $agenda = new Agenda();
+            
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meeting = $repository->findOneBy(['meeting_id' => $_GET['id']]);
-            $meeting_name = $meeting->getMeetingName();
+            $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
+            $meeting = $repository->findOneBy(['id' => $_GET['id']]);
+            $agenda = $agendaRepo->findBy(['meeting' => $_GET['id']]);
+            foreach ($agenda as $agenda){
+                $a = $agenda->getName();
+                $t = $agenda->getMinutes();
+                echo '<td>'. $a .' '. $t .'<td><br />';
+            }
+            echo $t;
+//            die;
+            $meeting_name = $meeting->getName();
 
-            return $this->render('default/started_meeting.html.twig', array('meeting_name' => $meeting_name));
+            return $this->render('default/started_meeting.html.twig', array('meeting_name' => $meeting_name, 'minutes' => $t, 'agenda_name' => $a));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }

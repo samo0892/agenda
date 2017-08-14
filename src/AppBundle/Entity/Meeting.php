@@ -71,6 +71,13 @@ class Meeting
     /**
      * @var string
      * 
+     * @ORM\Column(type="string", length=800)
+     */
+    private $description;
+    
+    /**
+     * @var string
+     * 
      * @ORM\Column(type="text")
      */
     private $emails;
@@ -206,6 +213,16 @@ class Meeting
     public function setEmails($emails)
     {
         $this->emails = $emails;
+    }
+    
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
     
     public function getFile()

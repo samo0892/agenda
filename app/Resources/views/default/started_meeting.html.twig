@@ -1,2 +1,8 @@
 <h1>Meeting gestartet</h1>
 <h2>Name des Meetings: {{ meeting_name }}</h2>
+
+<table>
+    {% for m in minutes %}
+        <td>Minuten: {{ m }}</td>
+    {% endfor %}
+</table>

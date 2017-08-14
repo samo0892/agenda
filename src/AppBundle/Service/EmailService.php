@@ -68,6 +68,7 @@ class EmailService
         $objective = $form["emails"]->getData();
         $isAttending = $form["type"]->getData();
         $file = $form["file"]->getData();
+        $description = $form["description"]->getData();
         
         $params = array(
             'meeting_name' => $meeting_name,
@@ -77,7 +78,8 @@ class EmailService
             'place' => $place,
             'objective' => $objective,
             'type' => $isAttending,
-            'file' => $file
+            'file' => $file,
+            'description' => $description   
         );
         
         //creates the mail with the inputs of the user and the given template
