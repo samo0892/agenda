@@ -135,21 +135,43 @@ class FrontendController extends Controller {
                 $em = $this->getDoctrine()->getManager();
                 $meeting = $form->getData();
                 $agendas = $meeting->getAgendas();
+                $files = $meeting->getFile();
                 
                 /**
                  * Adds and saves the uploaded file in $filePath 
                  */
-                $file = $form->get('file')->getData();
-                if($file){
-//                    foreach($file as $file){
-                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                        $file = $file->move(('brochures_directory/' /*.$form->get('name')->getData()*/), $fileName);
+//                $file = $form->get('file')->getData();
+//                if($file){
+                    foreach($files as $file['name'])
+                    {
+                        foreach($file['name'] as $test)
+                        {
+                            foreach($test as $test1)
+                            {
+//                                dump($test1->getClientOriginalExtension());
+                            
+                            
+                                $fileName = md5(uniqid()) . '.' . $test1->getClientOriginalExtension();
+                                
+                            
+                                $file = $test1->move(('brochures_directory/' /*.$form->get('name')->getData()*/), $fileName);
+                                
 
                         $filePath = 'file:///' . $file->getRealPath();
                         $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
-                        $meeting->setFile($file);
-//                    }
+                        $test1->setMeeting($meeting);
+//                        $em->persist($file['name']);
+                        dump($filePath);
+                       }die;
+                        
+                            
+                        }
+                        
+//                        }
+                        
+                        
                 }
+                $em->flush();
                 
                 $em->persist($meeting);
                 $em->flush();

@@ -97,9 +97,11 @@ class CreateMeetingType extends AbstractType {
                     'prototype' => true,
                     'label' => false,
                 ))
-                ->add('file', FileType::class, array('label' => 'Datei hinzufügen',
-                    'required' => false,
-//                    'multiple' => true,
+                ->add('file', CollectionType::class, array('label' => 'Datei hinzufügen',
+                    'entry_type' => FileType::class,
+                    'allow_add' => true,
+                    'prototype' => true,
+                    'label' => false,
                 ))
    
                 ->add('save', SubmitType::class, array('label' => 'Meeting erstellen'));
