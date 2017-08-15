@@ -8,28 +8,6 @@
 <h1>Meeting gestartet</h1>
 <h2>Name des Meetings: {{ meeting_name }}</h2>
 <br />
-<p onload="countdown()"><p>
-        <div id="zaehler"></div>  
-
-<script type="text/javascript">
-    var timer=60;
-    var min=0;
-    var sec=0;
-    function startTimer(){
-        min = parseInt(timer/60);
-        sec = parseInt(timer%60);
-        
-        if(timer<1){
-            
-        }
-        document.getElementById("time").innerHTML = "<b>Time Left: </b>"+min.toString()+":"+sec.toString();
-        timer--;
-        setTimeout(function(){
-            startTimer();
-        }, 100);
-    }
-    
-</script>
 
 
     {% for agenda in agendas %}
@@ -37,20 +15,4 @@
     {% endfor %}
 
 
-
-
-<script type="text/javascript">
-        <!--
-        sek=200;
-        function countdown(){
-        sek--;
-        document.getElementById('zaehler').innerHTML=sek;
-        if(sek>0)
-        setTimeout('countdown()',1000);
-        
-        else location.href='logout.php';
-        }
-        //-->
-        </script>
-        
-  {% endblock %}      
+{% endblock %}
