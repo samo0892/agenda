@@ -83,11 +83,9 @@ class Meeting
     private $emails;
     
     /**
-     * A list of agendas by this meeting.
+     * @ORM\Column(type="string", length=255)
      *
-     * @var array
-     *
-     * @ORM\OneToMany(targetEntity="File", mappedBy="meeting", cascade={"persist"})
+     * @Assert\File
      */
     private $file;
     
@@ -227,19 +225,11 @@ class Meeting
         $this->description = $description;
     }
     
-    /*
-     * @return array
-     */
     public function getFile()
     {
         return $this->file;
     }
     
-    /**
-     * Set images
-     *
-     * @param array $file
-     */
     public function setFile($file)
     {
         $this->file = $file;

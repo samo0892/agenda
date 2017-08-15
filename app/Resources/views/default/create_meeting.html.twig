@@ -55,9 +55,16 @@
                     var emailCount = '{{ form.agendas|length }}';
 
                     jQuery(document).ready(function() {
+                        
+                        addAnAgenda();
+                        
                         jQuery('#add-another-email').click(function(e) {
                             e.preventDefault();
 
+                            addAnAgenda();
+                        });
+                        
+                        function addAnAgenda() {
                             var emailList = jQuery('#email-fields-list');
 
                             // grab the prototype template
@@ -71,7 +78,7 @@
                             // create a new list element and add it to the list
                             var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
                             newLi.appendTo(emailList);
-                        });
+                        }
                     })
                 </script>
                 

@@ -135,43 +135,21 @@ class FrontendController extends Controller {
                 $em = $this->getDoctrine()->getManager();
                 $meeting = $form->getData();
                 $agendas = $meeting->getAgendas();
-                $files = $meeting->getFile();
                 
                 /**
                  * Adds and saves the uploaded file in $filePath 
                  */
-//                $file = $form->get('file')->getData();
-//                if($file){
-                    foreach($files as $file['name'])
-                    {
-                        foreach($file['name'] as $test)
-                        {
-                            foreach($test as $test1)
-                            {
-//                                dump($test1->getClientOriginalExtension());
-                            
-                            
-                                $fileName = md5(uniqid()) . '.' . $test1->getClientOriginalExtension();
-                                
-                            
-                                $file = $test1->move(('brochures_directory/' /*.$form->get('name')->getData()*/), $fileName);
-                                
+                $file = $form->get('file')->getData();
+                if($file){
+//                    foreach($file as $file){
+                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                        $file = $file->move(('brochures_directory/' /*.$form->get('name')->getData()*/), $fileName);
 
                         $filePath = 'file:///' . $file->getRealPath();
                         $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
-                        $test1->setMeeting($meeting);
-//                        $em->persist($file['name']);
-                        dump($filePath);
-                       }die;
-                        
-                            
-                        }
-                        
-//                        }
-                        
-                        
+                        $meeting->setFile($file);
+//                    }
                 }
-                $em->flush();
                 
                 $em->persist($meeting);
                 $em->flush();
@@ -280,17 +258,11 @@ class FrontendController extends Controller {
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
             $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
             $meeting = $repository->findOneBy(['id' => $_GET['id']]);
-            $agenda = $agendaRepo->findBy(['meeting' => $_GET['id']]);
-            foreach ($agenda as $agenda){
-                $a = $agenda->getName();
-                $t = $agenda->getMinutes();
-                echo '<td>'. $a .' '. $t .'<td><br />';
-            }
-            echo $t;
+            $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
 //            die;
             $meeting_name = $meeting->getName();
 
-            return $this->render('default/started_meeting.html.twig', array('meeting_name' => $meeting_name, 'minutes' => $t, 'agenda_name' => $a));
+            return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
