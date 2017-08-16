@@ -261,8 +261,16 @@ class FrontendController extends Controller {
             $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
 //            die;
             $meeting_name = $meeting->getName();
+            
+            $meeting_minutes = [];
+            
+            foreach($agendas as $agenda){
+                $meeting_minutes[] = $agenda->getMinutes();
+                dump($meeting_minutes);
+            }
+//            die;
 
-            return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name));
+            return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
