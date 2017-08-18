@@ -18,6 +18,7 @@
  
 
 <script>
+
 function startTimer(duration, display) {
     var start = Date.now(),
         diff,
@@ -36,6 +37,15 @@ function startTimer(duration, display) {
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         display.textContent = minutes + ":" + seconds; 
+        if(display.textContent == "00:00"){
+            $('#time_2').each(function() {
+{#            var first = $('.test')[0];#}
+            var minute = jQuery('#time_2').text();
+            var fiveMinutes = 10 * minute;
+            //display = document.querySelector('#time');
+            startTimer(fiveMinutes, this);
+        });
+        }
 
         if (diff <= 0) {
             // add one second so that the count down starts at the full duration
@@ -57,23 +67,15 @@ window.onload = function () {
         });
     
     $( "#start" ).click(function() {
-        $('.test').each(function() {
-            var first = $('.test')[0];
-            var minute = jQuery(first).text();
+        $('#time_1').each(function() {
+{#            var first = $('.test')[0];#}
+            var minute = jQuery('#time_1').text();
             var fiveMinutes = 10 * minute;
             //display = document.querySelector('#time');
             startTimer(fiveMinutes, this);
         });
         console.log(elements);
-      });
-    
-        
-        
-    
-        
-    
-        
-    
+      });   
 };
 </script>
 

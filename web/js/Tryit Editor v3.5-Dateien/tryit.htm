@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body contenteditable="false">
+
+<p id="demo">BMW<br></p>
+
+<script>
+var cars = ["BMW", "Volvo", "Saab", "Ford"];
+var text = "";
+
+list: {
+    text += cars[0] + "<br>"; 
+    break list;
+    text += cars[1] + "<br>"; 
+    text += cars[2] + "<br>"; 
+    
+    text += cars[3] + "<br>"; 
+    text += cars[4] + "<br>"; 
+    text += cars[5] + "<br>"; 
+}
+
+document.getElementById("demo").innerHTML = text;
+</script>
+
+
+
+</body></html>
