@@ -2,6 +2,7 @@
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 
 {% block head %}
+    
     <title>{% block title %}Meeting erstellen{% endblock %}</title>
     {% block jquery %}
         <script src="https://code.jquery.com/jquery-latest.js"></script>
@@ -18,6 +19,7 @@
 {% endblock %}
 
 {% block body %}
+    {% include 'default/menu.html.twig' %}
     <h2>Meeting erstellen</h2>
     
     {% include 'default/flash_messages.html.twig' %}

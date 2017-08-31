@@ -9,74 +9,45 @@
 <h2>Name des Meetings: {{ meeting_name }}</h2>
 <br />
 
-
+    <div id = "countdownExample">
     {% for agenda in agendas %}
-        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="test" id="time_{{loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
+        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" id="time_{{loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
     {% endfor %}
-    
-    <button id="start">Starten</button>
+    </div>
  
+    <button class="startButton">Starten</button>
+    
 
 <script>
-
-function startTimer(duration, display) {
-    var start = Date.now(),
-        diff,
-        minutes,
-        seconds;
-    function timer() {
-        // get the number of seconds that have elapsed since 
-        // startTimer() was called
-        diff = duration - (((Date.now() - start) / 1000) | 0);
-
-        // does the same job as parseInt truncates the float
-        minutes = (diff / 60) | 0;
-        seconds = (diff % 60) | 0;
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds; 
-        if(display.textContent == "00:00"){
-            $('#time_2').each(function() {
-{#            var first = $('.test')[0];#}
-            var minute = jQuery('#time_2').text();
-            var fiveMinutes = 10 * minute;
-            //display = document.querySelector('#time');
-            startTimer(fiveMinutes, this);
-        });
-        }
-
-        if (diff <= 0) {
-            // add one second so that the count down starts at the full duration
-            // example 05:00 not 04:59
-            start = Date.now() + 1000;
-        }
-    };
-    // we don't want to wait a full second before the timer starts
-    timer();
-    setInterval(timer, 1000);
-}
-
 window.onload = function () {
     
     var elements = [];
     
-    $('.test').each(function() {
+    $('.values').each(function() {
             elements.push(this);
-        });
+        });    
+         console.log(elements);
+
     
-    $( "#start" ).click(function() {
-        $('#time_1').each(function() {
-{#            var first = $('.test')[0];#}
-            var minute = jQuery('#time_1').text();
-            var fiveMinutes = 10 * minute;
-            //display = document.querySelector('#time');
-            startTimer(fiveMinutes, this);
+    console.log(elements);   
+    var arrayLength = elements.length + 1;
+    console.log(arrayLength);
+    var i = 0;
+    var timer = new Timer();
+    $('.values').each(function(){
+        console.log($(this).attr('id'));
+        timer.start({countdown: true, startValues: {seconds: jQuery('#time_' +i).text()}});
+        $('#countdownExample #time_' +i).html(timer.getTimeValues().toString());
+        timer.addEventListener('secondsUpdated', function (e) {
+            $('#countdownExample #time_' +i).html(timer.getTimeValues().toString());
         });
-        console.log(elements);
-      });   
+        timer.addEventListener('targetAchieved', function (e) {
+            $('#countdownExample #time_' +i).html('FERTIG');
+        });
+        i++;
+    });
 };
+
 </script>
 
 {% endblock %}
