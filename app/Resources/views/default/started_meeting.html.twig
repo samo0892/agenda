@@ -30,21 +30,31 @@ window.onload = function () {
 
     
     console.log(elements);   
-    var arrayLength = elements.length + 1;
-    console.log(arrayLength);
-    var i = 0;
-    var timer = new Timer();
-    $('.values').each(function(){
+{#    var arrayLength = elements.length + 1;#}
+{#    console.log(arrayLength);#}
+{#    var i = 0;#}
+   {# var timer = new Timer();
+    var timer1 = new Timer();
+    var timer2 = new Timer();#}
+    
+    var timer = [];
+    
+    $('.values').each(function(index){
         console.log($(this).attr('id'));
-        timer.start({countdown: true, startValues: {seconds: jQuery('#time_' +i).text()}});
-        $('#countdownExample #time_' +i).html(timer.getTimeValues().toString());
-        timer.addEventListener('secondsUpdated', function (e) {
-            $('#countdownExample #time_' +i).html(timer.getTimeValues().toString());
+        console.log(index);
+        timer[index] = new Timer();
+        timer[index].start({countdown: true, startValues: {seconds: jQuery('#time_' +(index+1)).text()}});
+        console.log('#time_' +index+1);
+        $('#countdownExample #time_' +(index+1)).html(timer[index].getTimeValues().toString());
+        timer[index].addEventListener('secondsUpdated', function (e) {
+            $('#countdownExample #time_' +(index+1)).html(timer[index].getTimeValues().toString());
         });
-        timer.addEventListener('targetAchieved', function (e) {
-            $('#countdownExample #time_' +i).html('FERTIG');
+        timer[index].addEventListener('targetAchieved', function (e) {
+            $('#countdownExample #time_' +(index+1)).html('FERTIG');
         });
-        i++;
+        
+{#        i++;#}
+{#        timer.stop();#}
     });
 };
 
