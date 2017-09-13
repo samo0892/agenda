@@ -98,6 +98,15 @@ class Meeting
      */
     private $agendas;
     
+    /**
+     * A list of agendas by this meeting.
+     *
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="StartedMeeting", mappedBy="meeting", cascade={"persist"})
+     */
+    private $notice;
+    
     public function __construct() {
         
     }
@@ -278,4 +287,14 @@ class Meeting
     function setType($type) {
         $this->type = $type;
     }
+    
+    function getNotice() {
+        return $this->notice;
+    }
+
+    function setNotice($notice) {
+        $this->notice = $notice;
+    }
+
+
 }

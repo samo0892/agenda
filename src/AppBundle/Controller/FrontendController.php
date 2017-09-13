@@ -11,9 +11,11 @@ use AppBundle\Entity\User;
 use AppBundle\Form\LoginType;
 use AppBundle\Entity\Meeting;
 use AppBundle\Form\DetailsType;
+use AppBundle\Form\StartedMeetingType;
 use AppBundle\Form\CompletedDetailsType;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Knp\Snappy\Pdf;
 
 class FrontendController extends Controller {
     
@@ -250,27 +252,33 @@ class FrontendController extends Controller {
     public function startMeetingAction(Request $request) {
         $session = $request->getSession();
         $userId = $session->get('id');
-
+        $appPath = $this->container->getParameter('kernel.root_dir');
+        $webPath = realpath($appPath . '/../web');
+        
         if ($userId) {
-//            $meeting = new Meeting();
-//            $agenda = new Agenda();
-            
+            $form = $this->createForm(StartedMeetingType::class);
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
             $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
             $meeting = $repository->findOneBy(['id' => $_GET['id']]);
+            $meeting_id = $meeting->getId();
             $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
-//            die;
             $meeting_name = $meeting->getName();
+            $meeting_files = $meeting->getFile();
             
             $meeting_minutes = [];
             
             foreach($agendas as $agenda){
                 $meeting_minutes[] = $agenda->getMinutes();
-                dump($meeting_minutes);
+//                dump($meeting_minutes);
             }
 //            die;
+            
+            if ($form->isSubmitted() && $form->isValid()) {
+                
+            }
 
-            return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes));
+            return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes, 
+                'meeting_files' => $meeting_files, 'form' => $form->createView(), 'meeting_id' => $meeting_id));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
@@ -389,5 +397,35 @@ class FrontendController extends Controller {
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
-    }    
+    } 
+    
+    /**
+     * 
+     * @Route("/dokument_speichern", name="save_document")
+     */
+    public function saveDocumentsAction(Request $request) {
+        $meeting = new Meeting();
+        $session = $request->getSession();
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
+        $userId = $session->get('id');
+        $previousUrl = $request->headers->get('referer');
+        $form = $this->createForm(StartedMeetingType::class);
+        $form->handleRequest($request);
+
+        if ($userId) {
+            $meeting = $repo->findOneBy(['id' => $_GET['id']]);
+            $em = $this->getDoctrine()->getManager();
+
+            
+            $em->flush();
+            $this->addFlash(
+                    'notice', 'Das Meeting wurde erfolgreich gelöscht.'
+            );
+
+            
+            return $this->redirect($previousUrl);
+        } else {
+            return $this->render('default/login.html.twig');
+        }
+    }
 }

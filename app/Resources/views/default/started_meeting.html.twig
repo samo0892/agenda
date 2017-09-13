@@ -11,35 +11,91 @@
 
     <div id = "countdownExample">
     {% for agenda in agendas %}
-        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" id="time_{{loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
+        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
     {% endfor %}
     </div>
  
-    <button class="startButton">Starten</button>
+    <button class="js-stop">Skip</button>
     
 
 <script>
-window.onload = function () {
-    var timer = [];
-    
-    $('.values').each(function(index){
-        console.log($(this).attr('id'));
-        console.log(index);
-        timer[index] = new Timer();
-        console.log(timer[index]);
-        $.each(timer, function(index, value){
-            console.log(timer);
-            timer[index].start({countdown: true, startValues: {seconds: jQuery('#time_' +(index+1)).text()}});
-            $('#countdownExample #time_' +(index+1)).html(timer[index].getTimeValues().toString());
-            timer[index].addEventListener('secondsUpdated', function (e) {
-                $('#countdownExample #time_' +(index+1)).html(timer[index].getTimeValues().toString());
-            });
-            timer[index].addEventListener('targetAchieved', function (e) {
-                $('#countdownExample #time_' +(index+1)).html('FERTIG');
-            });
-        });
+
+    $(document).ready(function () {
+    'use strict';
+
+    var timersElements = $('[data-time]'),
+    timers = [];
+    var dir;
+        
+    $.each(timersElements, function (k, timerElement) {
+        var t = {
+            "active" : false,
+            "time": parseInt($(timerElement).data('time'), 10),
+            "target": $(timerElement).data('target'),
+            "dir": "down",
+            
+            "interval": setInterval(function () {
+                console.log(this.dir = dir);
+                if(dir == "up"){
+                    if(t.active == true){
+                        t.time = t.time + 1;
+                        if (t.time >= 0) {
+                            t.show();
+                        } else {
+                            dir = "down";
+                        }
+                    }   
+                }  
+                if (dir == "down"){
+                   if(t.active == true){
+                        t.time = t.time - 1;
+                        if (t.time >= 0) {
+                            t.show();
+                        } else {
+                            dir = "up";
+                        }
+                    } 
+                }
+            }, 1),
+            
+           
+            "show": function () {
+                $(timerElement).text(this.time);
+            },
+            "countdown": function () {
+                dir = "down"
+                t.active = true;
+                t.interval();
+            },
+            "countup": function(){
+                t.active = true;
+                dir = "up";
+                t.interval();
+            },       
+            "stop":  function(){   
+                window.clearInterval(t.interval);
+                timers[1].countdown();    
+            }
+        };
+
+        timers[k] = t;
     });
-};
+    
+    $('.js-stop').click(function () {
+        timers[0].stop();
+    });
+
+    timers[0].countdown();
+
+
+    $.each(timers, function (k, timer) {
+        if (timer.active == true) {
+            timer.stop();
+        } 
+    });
+
+
+});
 
 </script>
 

@@ -69,3 +69,9 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+    
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"'
+        options:    []
