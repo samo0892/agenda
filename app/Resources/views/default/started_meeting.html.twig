@@ -15,7 +15,7 @@
     {% endfor %}
     </div>
  
-    <button class="js-stop">Skip</button>
+    <button class="js-stop" data-target="">Skip</button>
     
 
 <script>
@@ -25,14 +25,18 @@
 
     var timersElements = $('[data-time]'),
     timers = [];
+    console.log(timersElements);
     var dir;
+    var i = 1;
         
     $.each(timersElements, function (k, timerElement) {
         var t = {
             "active" : false,
+            "id" : $(timerElement).attr('id'),
             "time": parseInt($(timerElement).data('time'), 10),
             "target": $(timerElement).data('target'),
             "dir": "down",
+            {#i": 1,#}
             
             "interval": setInterval(function () {
                 console.log(this.dir = dir);
@@ -58,7 +62,12 @@
                 }
             }, 1),
             
-           
+            "nextElement": function(){
+                var index = timers.indexOf('[data-time]');
+                    if(index >= 0 && index < array.length - 1)
+                    var nextItem = array[index + 1];
+                    nextItem.countdown();
+            },
             "show": function () {
                 $(timerElement).text(this.time);
             },
@@ -66,15 +75,26 @@
                 dir = "down"
                 t.active = true;
                 t.interval();
+                
             },
             "countup": function(){
                 t.active = true;
                 dir = "up";
                 t.interval();
             },       
-            "stop":  function(){   
+            "stop":  function(){  
+                this.id = i++;
                 window.clearInterval(t.interval);
-                timers[1].countdown();    
+                console.log($(timerElement).attr('dir'));
+                console.log(t.dir);
+                $(timerElement).attr('id', 'time_'+i);
+                console.log(t.id);
+                if(timers[t.id]){
+                    timers[t.id].countdown();   
+                }else{
+                    console.log("fertig!");
+                    return true;
+                }
             }
         };
 
