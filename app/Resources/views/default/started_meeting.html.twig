@@ -11,7 +11,7 @@
 
     <div id = "countdownExample">
     {% for agenda in agendas %}
-        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
+        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
     {% endfor %}
     </div>
  
@@ -21,101 +21,112 @@
 <script>
 
     $(document).ready(function () {
-    'use strict';
+        'use strict';
 
-    var timersElements = $('[data-time]'),
-    timers = [];
-    console.log(timersElements);
-    var dir;
-    var i = 1;
-        
-    $.each(timersElements, function (k, timerElement) {
-        var t = {
-            "active" : false,
-            "id" : $(timerElement).attr('id'),
-            "time": parseInt($(timerElement).data('time'), 10),
-            "target": $(timerElement).data('target'),
-            "dir": "down",
-            {#i": 1,#}
-            
-            "interval": setInterval(function () {
-                console.log(this.dir = dir);
-                if(dir == "up"){
-                    if(t.active == true){
-                        t.time = t.time + 1;
-                        if (t.time >= 0) {
-                            t.show();
-                        } else {
-                            dir = "down";
+        var timersElements = $('[data-time]'),
+        timers = [];
+        console.log(timersElements);
+        var dir;
+        var i = 1;
+
+        $.each(timersElements, function (k, timerElement) {
+            var t = {
+                "active" : false,
+                "id" : $(timerElement).attr('id'),
+                "time": parseInt($(timerElement).data('time'), 10),
+                "target": $(timerElement).data('target'),
+                "dir": "down",
+                {#i": 1,#}
+
+                "interval": setInterval(function () {
+                    console.log(this.dir = dir);
+                    if(dir == "up"){
+                        if(t.active == true){
+                            t.time = t.time + 1;
+                            if (t.time >= 0) {
+                                t.show();
+                            } else {
+                                dir = "down";
+                            }
+                        }   
+                    }  
+                    if (dir == "down"){
+                       if(t.active == true){
+                            t.time = t.time - 1;
+                            if (t.time >= 0) {
+                                t.show();
+                            } else {
+                                dir = "up";
+                            }
+                        } 
+                    }
+                }, 1),
+
+                "nextElement": function(){
+                    var index = timers.indexOf('[data-time]');
+                        if(index >= 0 && index < array.length - 1)
+                        var nextItem = array[index + 1];
+                        nextItem.countdown();
+                },
+                "show": function () {
+                    $(timerElement).text(this.time);
+                },
+                "countdown": function () {
+                    dir = "down"
+                    t.active = true;
+                    t.interval();
+
+                },
+                "countup": function(){
+                    t.active = true;
+                    dir = "up";
+                    t.interval();
+                },       
+                "stop":  function(){  
+                    $.each(timers, function(index){
+                        if(t.active = true){
+                            var tElement = jQuery('#time_' +(this.id));
+                            window.clearInterval(t.interval);
+                            t.active = false;
+                            this.id = i++;
+
+                            console.log('stop this.id:' + this.id);
+                            tElement.active = true;
+                            //timers[t.id].countdown(); 
+                            timers[this.id].countdown(); 
+
                         }
-                    }   
-                }  
-                if (dir == "down"){
-                   if(t.active == true){
-                        t.time = t.time - 1;
-                        if (t.time >= 0) {
-                            t.show();
-                        } else {
-                            dir = "up";
+                        else{
+                            console.log("t ist nicht aktiv");    
                         }
-                    } 
+                    }); 
                 }
-            }, 1),
-            
-            "nextElement": function(){
-                var index = timers.indexOf('[data-time]');
-                    if(index >= 0 && index < array.length - 1)
-                    var nextItem = array[index + 1];
-                    nextItem.countdown();
-            },
-            "show": function () {
-                $(timerElement).text(this.time);
-            },
-            "countdown": function () {
-                dir = "down"
-                t.active = true;
-                t.interval();
-                
-            },
-            "countup": function(){
-                t.active = true;
-                dir = "up";
-                t.interval();
-            },       
-            "stop":  function(){  
-                this.id = i++;
-                window.clearInterval(t.interval);
-                console.log($(timerElement).attr('dir'));
-                console.log(t.dir);
-                $(timerElement).attr('id', 'time_'+i);
-                console.log(t.id);
-                if(timers[t.id]){
-                    timers[t.id].countdown();   
-                }else{
-                    console.log("fertig!");
-                    return true;
-                }
-            }
-        };
+            };
 
-        timers[k] = t;
+            timers[k] = t;
+
+            $('.js-stop').click(function () {
+                var objectId = $('.active').data('tid') + 1;
+                var timerId = $('.active').data('tid') - 1;
+                $('.active').removeClass('active');
+                $('#time_' + objectId).addClass('active');
+                console.log(objectId + ' : ' + timerId);
+                timers[timerId].stop();
+            });
+
+        });
+
+        $('#time_1').addClass('active');
+        timers[0].countdown();
+
+        $.each(timers, function (k, timer) {
+            if (timer.active == true) {
+                timer.stop();
+            } 
+        });
+
+
     });
-    
-    $('.js-stop').click(function () {
-        timers[0].stop();
-    });
-
-    timers[0].countdown();
-
-
-    $.each(timers, function (k, timer) {
-        if (timer.active == true) {
-            timer.stop();
-        } 
-    });
-
-
-});
 
 </script>
 
