@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
 
 {% block head %}
     <title>Meeting gestartet</title>
@@ -8,20 +9,78 @@
 <h1>Meeting gestartet</h1>
 <h2>Name des Meetings: {{ meeting_name }}</h2>
 <br />
-
-    <div id = "countdownExample">
-    {% for agenda in agendas %}
-        <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
-    {% endfor %}
-    </div>
- 
-    <button class="js-stop" data-target="">Skip</button>
+<div class="row">
+    <div class="col-md-4">
+        <div id = "countdownExample">
+            {% for agenda in agendas %}
+                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
+            {% endfor %}
+        </div>
     
-
+        <button class="js-stop" data-target="">Skip</button>
+        <br />
+        <br />
+        <a onclick="return confirmSubmit()" href="dokument_speichern?id={{meeting_id}}"><button type="button" class="btn btn-success">Speichern</button> </a>
+    </div>
+    
+    {{ form_start(form) }}
+        <div class="col-md-4">
+            <p id="email-fields-list" data-prototype="{{ form_widget(form.notice.vars.prototype)|e }}">
+                {% for noticeField in form.notice %}
+                    <td>{{ form_errors(noticeField) }}</td>
+                    {{ form_widget(noticeField) }}
+                {% endfor %}
+            </p>    
+            <a href="#" id="add-another-email" class="btn btn-default">Notiz hinzufügen</a>
+            <br />
+            <br />
+    {#        <td><a onclick="return confirmSubmit()" href="pdf?id={{meeting_id}}"><button type="button" class="btn btn-danger">Speichern</button></a>  #}
+            <br />    
+            <br />
+            {{ form_row(form.save) }}
+            {#<input type="submit" value="Submit" />#}
+        </div>
+    {{ form_end(form) }}
+    <div class="col-md-4">
+       <p>Dokumente:</p> 
+       <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_files}}">{{meeting_files}}</a>   
+    </div>    
+</div>
+    
 <script>
+    
 
     $(document).ready(function () {
         'use strict';
+        
+            var emailCount = '{{ form.notice|length }}';
+
+                        jQuery(document).ready(function() {
+
+                            addAnAgenda();
+
+                            jQuery('#add-another-email').click(function(e) {
+                                e.preventDefault();
+
+                                addAnAgenda();
+                            });
+
+                            function addAnAgenda() {
+                                var emailList = jQuery('#email-fields-list');
+
+                                // grab the prototype template
+                                var newWidget = emailList.attr('data-prototype');
+                                // replace the "__name__" used in the id and name of the prototype
+                                // with a number that's unique to your emails
+                                // end name attribute looks like name="contact[emails][2]"
+                                newWidget = newWidget.replace(/__name__/g, emailCount);
+                                emailCount++;
+
+                                // create a new list element and add it to the list
+                                var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
+                                newLi.appendTo(emailList);
+                            }
+                        })    
 
         var timersElements = $('[data-time]'),
         timers = [];
@@ -36,7 +95,6 @@
                 "time": parseInt($(timerElement).data('time'), 10),
                 "target": $(timerElement).data('target'),
                 "dir": "down",
-                {#i": 1,#}
 
                 "interval": setInterval(function () {
                     console.log(this.dir = dir);
@@ -61,13 +119,7 @@
                         } 
                     }
                 }, 1),
-
-                "nextElement": function(){
-                    var index = timers.indexOf('[data-time]');
-                        if(index >= 0 && index < array.length - 1)
-                        var nextItem = array[index + 1];
-                        nextItem.countdown();
-                },
+                        
                 "show": function () {
                     $(timerElement).text(this.time);
                 },
@@ -92,7 +144,6 @@
 
                             console.log('stop this.id:' + this.id);
                             tElement.active = true;
-                            //timers[t.id].countdown(); 
                             timers[this.id].countdown(); 
 
                         }

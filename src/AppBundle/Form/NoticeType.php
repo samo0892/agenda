@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use AppBundle\Entity\Meeting;
+use AppBundle\Entity\StartedMeeting;
 
 class NoticeType extends AbstractType
 {
@@ -34,7 +34,7 @@ class NoticeType extends AbstractType
     
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults(array(
-            'data_class' => Meeting::class,
+            'data_class' => StartedMeeting::class,
         ));
     }
 }

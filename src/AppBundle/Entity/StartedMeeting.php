@@ -42,7 +42,7 @@ class StartedMeeting
     private $person;
     
     /**
-     * @var date
+     * @var \DateTime
      * 
      * @ORM\Column(type="date", length=50)
      */
@@ -96,7 +96,7 @@ class StartedMeeting
         $this->person = $person;
     }
 
-    function setDate(date $date) {
+    function setDate(\DateTime $date) {
         $this->date = $date;
     }
 

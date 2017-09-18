@@ -1,0 +1,14 @@
+<html lang="de">
+{% block head %}
+<head>
+    <!DOCTYPE html>
+    <title>Merkzettel.pdf</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+{% endblock %}
+
+{% block body %}
+    {% for startedMeeting in startedMeetings %}
+        {{ startedMeeting }}
+    {% endfor %}
+{% endblock %}

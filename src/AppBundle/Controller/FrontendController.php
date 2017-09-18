@@ -16,6 +16,7 @@ use AppBundle\Form\CompletedDetailsType;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Knp\Snappy\Pdf;
+use Symfony\Component\HttpFoundation\Response;
 
 class FrontendController extends Controller {
     
@@ -254,9 +255,11 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
         $appPath = $this->container->getParameter('kernel.root_dir');
         $webPath = realpath($appPath . '/../web');
+        $startedMeeting = new \AppBundle\Entity\StartedMeeting();
         
         if ($userId) {
             $form = $this->createForm(StartedMeetingType::class);
+            
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
             $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
             $meeting = $repository->findOneBy(['id' => $_GET['id']]);
@@ -269,12 +272,28 @@ class FrontendController extends Controller {
             
             foreach($agendas as $agenda){
                 $meeting_minutes[] = $agenda->getMinutes();
-//                dump($meeting_minutes);
             }
-//            die;
-            
+            $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
+                $startedMeeting = $form->getData();
+                foreach($startedMeeting as $sm){
+                    foreach($sm as $s){
+                    dump($s->getDate());
+                    dump($s->getNotice());
+                    dump($s->getPerson());
+                    dump($s->getType());
+                    }}die;
                 
+                
+                $html = $this->renderView('pdf/pdf.html.twig', array('startedMeetings' => $startedMeeting));
+                return new Response(
+                    $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                    200,
+                    array(
+                        'Content-Type'        => 'application/pdf',
+                        'Content-Disposition' => sprintf('attachment; filename="file.pdf"')
+                    )
+                );
             }
 
             return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes, 
@@ -283,6 +302,29 @@ class FrontendController extends Controller {
             return $this->render('default/need_login.html.twig', array());
         }
     }
+    
+    /**
+     * Deletes finished or not started meetings
+     * 
+     * @Route("/pdf", name="create_pdf")
+     */
+//    public function createPdfAction(Request $request) {
+//         $startedMeeting = new \AppBundle\Entity\StartedMeeting();
+//         $session = $request->getSession();
+//         $form = $this->createForm(StartedMeetingType::class);
+//         $a = $form->getData();
+//         dump($a);die;
+//         
+//          $html = $this->renderView('pdf/pdf.html.twig', array());
+//                return new Response(
+//                    $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+//                    200,
+//                    array(
+//                        'Content-Type'        => 'application/pdf',
+//                        'Content-Disposition' => sprintf('attachment; filename="file.pdf"')
+//                    )
+//                );
+//    }
 
     /**
      * Deletes finished or not started meetings
@@ -331,9 +373,7 @@ class FrontendController extends Controller {
             $meetings = $repo->findAll();
             $meeting = $repo->findOneBy(['id' => $_GET['id']]);
             $em = $this->getDoctrine()->getManager();
-//            s$fileName = $form->get('file')->setData($meeting->getFile());
-//            dump($fileName);die;
-
+            
             if ($meeting) {
                 $this->get('detail_service')->getDetails($form, $meeting);
             }
