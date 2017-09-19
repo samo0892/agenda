@@ -6,7 +6,7 @@
 
 {% block body %}
         {% include 'default/menu.html.twig' %}
-    <script language="JavaScript" type="text/JavaScript">
+    <script>
         function confirmSubmit()
         {
             var agree=confirm("Sind Sie sich sicher?");
@@ -19,7 +19,8 @@
     
     <h2>Abgeschlossene Meetings</h2>
 
-
+    {% include 'default/flash_messages.html.twig' %}
+    
     {% if meetings %}
         <table border="1" align="center" class="table table-bordered" style="margin-left: 50px; margin-right: 50px">
             <tr>
@@ -33,7 +34,7 @@
                         <td><a href="completed_details?id={{meeting.Id}}" style="color:black">{{ meeting.date|date('d-m-Y') }}</a></td>
                         <td><a href="completed_details?id={{meeting.Id}}" style="color:black">{{ meeting.place }}</a></td>
                         <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.Id}}"><button class="btn btn-danger">Löschen</button></a> 
-                            <a href="#"><button class="btn btn-info">Protokoll anzeigen</button></a></td>
+                            <a href="protokoll_anzeigen?id={{meeting.id}}"><button class="btn btn-info">Protokoll anzeigen</button></a></td>
                     </tr>
                 {% endfor %}
             {% else %}

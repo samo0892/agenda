@@ -10,12 +10,6 @@
 
         </script>
     {% endblock %}
-    {#{% block javascript %}
-        {{ parent() }}
-        {% block javascripts '@AppBundle/Resources/public/js/form/collection.js'%}
-        <script type="text/javascript" src="{{ '' }}"></script>
-        {% endblock %}
-    {% endblock %}#}
 {% endblock %}
 
 {% block body %}
@@ -40,12 +34,8 @@
                 {{ form_row(form.description) }}
                 <p id="email-fields-list" data-prototype="{{ form_widget(form.agendas.vars.prototype)|e }}">
                     {% for emailField in form.agendas %}
-                        {#{% if loop.index > 1 %}#}
-                        
-                            {{ form_errors(emailField) }}
-                            {{ form_widget(emailField) }}
-                        
-{#                        {% endif %}#}
+                        {{ form_errors(emailField) }}
+                        {{ form_widget(emailField) }}
                     {% endfor %}
                 <p>
                 <a href="#" id="add-another-email">Einen weiteren Agendapunkt hinzufügen</a>
@@ -82,9 +72,7 @@
                             newLi.appendTo(emailList);
                         }
                     })
-                </script>
-                
-                
+                </script> 
             </div>
         </div>
     </div>

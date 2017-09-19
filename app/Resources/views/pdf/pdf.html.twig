@@ -8,7 +8,19 @@
 {% endblock %}
 
 {% block body %}
+    <h1>Notizen zum Meeting</h1>
+    <p>In dem Dokument können Sie die Notizen finden, welche während des Meetings <b>{{ meeting_name }}</b> am <b>{{ meeting_date }}</b> gemacht wurden.
+        <br />
+        <br />
     {% for startedMeeting in startedMeetings %}
-        {{ startedMeeting }}
+        <hr />
+        <br />
+        <b>Notizen:</b>    {{ startedMeeting.notice }}<br />
+        <b>Art:</b>        {{ startedMeeting.type }}<br />
+        <b>Personen:</b>       {{ startedMeeting.person }}<br />
+        <b>Bis zum:</b>      {{ startedMeeting.date|date('d.m.Y') }}<br />
+        <br >
     {% endfor %}
+    <hr />
+    <br />
 {% endblock %}

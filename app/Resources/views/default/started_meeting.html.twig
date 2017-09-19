@@ -11,20 +11,19 @@
 <br />
 <div class="row">
     <div class="col-md-4">
+        <h3>Agendapunkte</h3>
         <div id = "countdownExample">
             {% for agenda in agendas %}
                 <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
             {% endfor %}
         </div>
-    
-        <button class="js-stop" data-target="">Skip</button>
         <br />
-        <br />
-        <a onclick="return confirmSubmit()" href="dokument_speichern?id={{meeting_id}}"><button type="button" class="btn btn-success">Speichern</button> </a>
+        <button  class="js-stop btn btn-default" style="" data-target="">Skip</button>
     </div>
     
     {{ form_start(form) }}
         <div class="col-md-4">
+            <h3>Notizen zum Meeting</h3>
             <p id="email-fields-list" data-prototype="{{ form_widget(form.notice.vars.prototype)|e }}">
                 {% for noticeField in form.notice %}
                     <td>{{ form_errors(noticeField) }}</td>
@@ -38,12 +37,12 @@
             <br />    
             <br />
             {{ form_row(form.save) }}
-            {#<input type="submit" value="Submit" />#}
         </div>
     {{ form_end(form) }}
     <div class="col-md-4">
-       <p>Dokumente:</p> 
-       <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_files}}">{{meeting_files}}</a>   
+       <h3>Dokumente</h3> 
+       <br />
+       <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_files}}"><b>{{meeting_files}}</b></a>   
     </div>    
 </div>
     
@@ -100,6 +99,8 @@
                     console.log(this.dir = dir);
                     if(dir == "up"){
                         if(t.active == true){
+                            $('.active').css("color", "red");
+                            $('.active').css("font-size", "25px");
                             t.time = t.time + 1;
                             if (t.time >= 0) {
                                 t.show();
@@ -110,6 +111,7 @@
                     }  
                     if (dir == "down"){
                        if(t.active == true){
+                           $('.active').css("font-size", "25px");
                             t.time = t.time - 1;
                             if (t.time >= 0) {
                                 t.show();

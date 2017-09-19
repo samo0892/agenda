@@ -107,6 +107,13 @@ class Meeting
      */
     private $notice;
     
+    /**
+     * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\File
+     */
+    private $pdfFile;
+    
     public function __construct() {
         
     }
@@ -295,6 +302,15 @@ class Meeting
     function setNotice($notice) {
         $this->notice = $notice;
     }
+
+    function getPdfFile() {
+        return $this->pdfFile;
+    }
+
+    function setPdfFile($pdfFile) {
+        $this->pdfFile = $pdfFile;
+    }
+
 
 
 }

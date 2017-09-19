@@ -17,6 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FrontendController extends Controller {
     
@@ -146,7 +148,7 @@ class FrontendController extends Controller {
                 if($file){
 //                    foreach($file as $file){
                         $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                        $file = $file->move(('brochures_directory/' /*.$form->get('name')->getData()*/), $fileName);
+                        $file = $file->move('brochures_directory', $fileName);
 
                         $filePath = 'file:///' . $file->getRealPath();
                         $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
@@ -256,6 +258,7 @@ class FrontendController extends Controller {
         $appPath = $this->container->getParameter('kernel.root_dir');
         $webPath = realpath($appPath . '/../web');
         $startedMeeting = new \AppBundle\Entity\StartedMeeting();
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
         
         if ($userId) {
             $form = $this->createForm(StartedMeetingType::class);
@@ -267,6 +270,7 @@ class FrontendController extends Controller {
             $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
             $meeting_name = $meeting->getName();
             $meeting_files = $meeting->getFile();
+            $meeting_date = $meeting->getDate()->format('d.m.Y');;
             
             $meeting_minutes = [];
             
@@ -278,22 +282,58 @@ class FrontendController extends Controller {
                 $startedMeeting = $form->getData();
                 foreach($startedMeeting as $sm){
                     foreach($sm as $s){
-                    dump($s->getDate());
-                    dump($s->getNotice());
-                    dump($s->getPerson());
-                    dump($s->getType());
-                    }}die;
+                        $date = $s->getDate()->format('d.m.Y');
+                        $notice = $s->getNotice();
+                        $person = $s->getPerson();
+                        $type = $s->getType();
+                    }
+                }
+                
+                $pdfFilename = 'dokument_' .$meeting_name. '.pdf';
+//                dump($pdfFilename);die;
+                $pdfFolder = 'uploads/pdf-files/';
+                
+                $pdfConfiguration = array_merge(array(
+                    'disable-external-links' => true,
+                    'page-size' => 'A4',
+                    'disable-javascript' => true,
+                    'margin-top'    => 0,
+                    'margin-right'  => 0,
+                    'margin-bottom' => 0,
+                    'margin-left'   => 0,
+                    'quiet' => true
+                ));
+                
+//                $html = $this->renderView('pdf/pdf.html.twig', array('startedMeetings' => $sm, 'date' => $date, 'notice' => $notice, 'person' => $person, 'type' => $type,
+//                    'meeting_name' => $meeting_name, 'meeting_date' => $meeting_date));
+//                return new Response(
+//                    $this->get('knp_snappy.pdf')->getOutputFromHtml(array($html, $pdfFolder)),
+//                    200,
+//                    array(
+//                        'Content-Type'        => 'application/pdf',
+//                        'Content-Disposition' => sprintf('attachment; filename="%s"', $pdfFilename)
+//                    )
+//                );
                 
                 
-                $html = $this->renderView('pdf/pdf.html.twig', array('startedMeetings' => $startedMeeting));
-                return new Response(
-                    $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-                    200,
-                    array(
-                        'Content-Type'        => 'application/pdf',
-                        'Content-Disposition' => sprintf('attachment; filename="file.pdf"')
-                    )
+                $this->get('knp_snappy.pdf')->generateFromHtml(
+                    $this->renderView(
+                        'pdf/pdf.html.twig', array(
+                        'startedMeetings' => $sm, 'date' => $date, 'notice' => $notice, 'person' => $person, 'type' => $type,
+                        'meeting_name' => $meeting_name, 'meeting_date' => $meeting_date)
+                    ),
+                    'uploads/pdf-files/' .$pdfFilename,
+                    $pdfConfiguration,
+                    true
                 );
+                
+                $meeting = $repo->findOneBy(['id' => $_GET['id']]);
+                $em = $this->getDoctrine()->getManager();
+                $meeting->setPdfFile($pdfFilename);
+                $meeting->setIsComplete(1);
+                $em->flush();
+                
+                return $this->redirectToRoute('home');
             }
 
             return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes, 
@@ -302,29 +342,7 @@ class FrontendController extends Controller {
             return $this->render('default/need_login.html.twig', array());
         }
     }
-    
-    /**
-     * Deletes finished or not started meetings
-     * 
-     * @Route("/pdf", name="create_pdf")
-     */
-//    public function createPdfAction(Request $request) {
-//         $startedMeeting = new \AppBundle\Entity\StartedMeeting();
-//         $session = $request->getSession();
-//         $form = $this->createForm(StartedMeetingType::class);
-//         $a = $form->getData();
-//         dump($a);die;
-//         
-//          $html = $this->renderView('pdf/pdf.html.twig', array());
-//                return new Response(
-//                    $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-//                    200,
-//                    array(
-//                        'Content-Type'        => 'application/pdf',
-//                        'Content-Disposition' => sprintf('attachment; filename="file.pdf"')
-//                    )
-//                );
-//    }
+
 
     /**
      * Deletes finished or not started meetings
@@ -466,6 +484,33 @@ class FrontendController extends Controller {
             return $this->redirect($previousUrl);
         } else {
             return $this->render('default/login.html.twig');
+        }
+    }
+    
+    /**
+     * 
+     * @Route("/protokoll_anzeigen", name="show_protocoll")
+     */
+    public function showProtocoll(Request $request){
+        $meeting = new Meeting();
+        $session = $request->getSession();
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
+        $userId = $session->get('id');
+        
+        if($userId){
+            $meeting = $repo->findOneBy(['id' => $_GET['id']]);
+            $pdfFile = $meeting->getPdfFile();
+            $path = 'uploads/pdf-files/';
+            $response = new BinaryFileResponse('uploads/pdf-files/' .$pdfFile);
+
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_INLINE, //use ResponseHeaderBag::DISPOSITION_ATTACHMENT to save as an attachement
+                $pdfFile
+            );
+            
+//            return new BinaryFileResponse('uploads/pdf-files/' .$pdfFile);
+            return $response;
         }
     }
 }
