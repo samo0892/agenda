@@ -11,10 +11,11 @@
 <br />
 <div class="row">
     <div class="col-md-4">
+        <br />
         <h3>Agendapunkte</h3>
         <div id = "countdownExample">
             {% for agenda in agendas %}
-                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ 100*agenda.minutes }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ 1000*agenda.minutes }}</span></td><br /></h4>
+                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (60000*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
             {% endfor %}
         </div>
         <br />
@@ -40,9 +41,13 @@
         </div>
     {{ form_end(form) }}
     <div class="col-md-4">
-       <h3>Dokumente</h3> 
-       <br />
-       <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_files}}"><b>{{meeting_files}}</b></a>   
+        <h3>Dokumente</h3> 
+        <br />
+        {% if meeting_files %}
+            <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_files}}"><b>{{meeting_files}}</b></a>   
+        {% else %}
+            <p>Für dieses Meeting sind keine Dateien vorhanden.</p>
+        {% endif %}
     </div>    
 </div>
     
@@ -101,7 +106,7 @@
                         if(t.active == true){
                             $('.active').css("color", "red");
                             $('.active').css("font-size", "25px");
-                            t.time = t.time + 1;
+                            t.time = t.time + 15;
                             if (t.time >= 0) {
                                 t.show();
                             } else {
@@ -112,7 +117,7 @@
                     if (dir == "down"){
                        if(t.active == true){
                            $('.active').css("font-size", "25px");
-                            t.time = t.time - 1;
+                            t.time = t.time - 15;
                             if (t.time >= 0) {
                                 t.show();
                             } else {
@@ -123,7 +128,8 @@
                 }, 1),
                         
                 "show": function () {
-                    $(timerElement).text(this.time);
+                    
+                    $(timerElement).text(millito(this.time));
                 },
                 "countdown": function () {
                     dir = "down"
@@ -153,7 +159,7 @@
                             console.log("t ist nicht aktiv");    
                         }
                     }); 
-                }
+                },
             };
 
             timers[k] = t;
@@ -177,6 +183,12 @@
                 timer.stop();
             } 
         });
+        
+        function millito(millis){
+            var minutes = Math.floor(millis / 60000);
+            var seconds = ((millis % 60000) / 1000).toFixed(0);
+            return minutes + ":" + (seconds < 10 ? '0' : '') + (seconds-1);
+        }
 
 
     });

@@ -6,7 +6,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class IcsFileService
 {
-    public function createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location)
+    public function createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location, $description)
     {
         $fs = new Filesystem();
         $uid = rand(5, 1500);
@@ -19,11 +19,12 @@ CALSCALE:GREGORIAN
 METHOD:REQUEST
 BEGIN:VEVENT
 DTSTART:$meetingStartTimestamp
-DTSTAMP:$meetingEndTimestamp
+DTEND:$meetingEndTimestamp
+DTSTAMP: 20060812T125900Z
 ORGANIZER;CN=XYZ:mailto:do-not-reply@example.com
 UID:$uid
 ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP= TRUE;CN=Sample:emailaddress@testemail.com
-DESCRIPTION: requested Phone/Video Meeting Request
+DESCRIPTION: $description
 LOCATION:$location
 SEQUENCE:0
 STATUS:CONFIRMED

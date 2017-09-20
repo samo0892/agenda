@@ -26,7 +26,7 @@ class FrontendController extends Controller {
      * @Route("/test", name="test")
      */
     public function testAction() {
-        return $this->render('default/aaa.html.twig');
+        return $this->render('pdf/pdf.html.twig');
     }
 
     /**
@@ -175,11 +175,17 @@ class FrontendController extends Controller {
                  * Creates an ics-file and sends to the participants via mail
                  */
                 $meetingName = $form->get('name')->getData();
-                $meetingStartTime = $form->get('date')->getData()->format("d-m-Y'T'HHmmss");
-                $meetingEndTime = $form->get('date')->getData()->format("d-m-Y'T'HHmmss");
+                
+                $meetingStartHour = $form->get('startTime')->getData()->format("H:m");
+                $meetingStartTime = $form->get('date')->getData()->format("d-m-Y ");
+                $meetingStartTime .= $meetingStartHour;
+                $meetingEndHour = $form->get('endTime')->getData()->format("H:m");
+                $meetingEndTime = $form->get('date')->getData()->format("d-m-Y ");
+                $meetingEndTime .= $meetingEndHour;
+                $description = $form->get('description')->getData();
                 $location = $form->get('place')->getData();
                 
-                $this->get('ics_file_service')->createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location);
+                $this->get('ics_file_service')->createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location, $description);
 
                 if($file){
                 $sendThisMail = $this->get('email_service')
@@ -324,7 +330,7 @@ class FrontendController extends Controller {
                     ),
                     'uploads/pdf-files/' .$pdfFilename,
                     $pdfConfiguration,
-                    true
+                    true //overwriting existing file
                 );
                 
                 $meeting = $repo->findOneBy(['id' => $_GET['id']]);
@@ -332,6 +338,26 @@ class FrontendController extends Controller {
                 $meeting->setPdfFile($pdfFilename);
                 $meeting->setIsComplete(1);
                 $em->flush();
+                
+                $participants = $meeting->getEmails();
+                dump($participants);die;
+//                foreach($participants as $participant)
+//                {
+//                   $message = (new \Swift_Message('Hello Email'))
+//                    ->setFrom('baldede@skygate.de')
+//                    ->setTo($participant)
+//                    ->setBody(
+//                        $this->renderView(
+//                            // app/Resources/views/Emails/registration.html.twig
+//                            'emails/created_protocoll_mail.html.twig',
+//                            array('meeting_name' => $meeting_name,
+//                                'meeting_date' => $meeting_date)
+//                        ),
+//                        'text/html'
+//                    );
+//
+//                    $this->get('mailer')->send($message);
+//                }
                 
                 return $this->redirectToRoute('home');
             }
