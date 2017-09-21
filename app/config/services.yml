@@ -8,16 +8,16 @@ services:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
     
-    app.file_uploader:
-        class: AppBundle\FileUploader
-        arguments: ['%brochures_directory%']
+    #app.file_uploader:
+    #    class: AppBundle\FileUploader
+    #    arguments: ['%brochures_directory%']
         
-    app.doctrine_file_listener:
-        class: AppBundle\EventListener\FileUploadListener
-        arguments: ['@app.file_uploader']
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate }
+    #app.doctrine_file_listener:
+    #    class: AppBundle\EventListener\FileUploadListener
+    #    arguments: ['@app.file_uploader']
+    #    tags:
+    #        - { name: doctrine.event_listener, event: prePersist }
+    #        - { name: doctrine.event_listener, event: preUpdate }
             
     email_service:
         class: AppBundle\Service\EmailService

@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\File;
 use AppBundle\Form\CreateMeetingType;
-use function PHPSTORM_META\elementType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -139,22 +139,32 @@ class FrontendController extends Controller {
             if ($form->isSubmitted() && $form->isValid()) {                
                 $em = $this->getDoctrine()->getManager();
                 $meeting = $form->getData();
+                
                 $agendas = $meeting->getAgendas();
+                $files = $meeting->getFile();
+                //dump($files); exit;
+                
                 
                 /**
                  * Adds and saves the uploaded file in $filePath 
                  */
-                $file = $form->get('file')->getData();
-                if($file){
-//                    foreach($file as $file){
+                foreach($files as $file){
+                    if($file){
                         $fileName = md5(uniqid()) . '.' . $file->guessExtension();
                         $file = $file->move('brochures_directory', $fileName);
 
                         $filePath = 'file:///' . $file->getRealPath();
                         $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
-                        $meeting->setFile($file);
-//                    }
+
+                        $meetingFile = new File;
+                        $meetingFile->setName($fileName);
+                        $meetingFile->setPath($filePath);
+                        $meetingFile->setMeeting($meeting);
+                        $fileArray[] = $meetingFile;
+                    }
                 }
+                
+                $meeting->setFile($fileArray);
                 
                 $em->persist($meeting);
                 $em->flush();
@@ -188,11 +198,11 @@ class FrontendController extends Controller {
                 $this->get('ics_file_service')->createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location, $description);
 
                 if($file){
-                $sendThisMail = $this->get('email_service')
-                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath, $fileName); //if a file (PDF,Doc,...) is given
+                    $sendThisMail = $this->get('email_service')
+                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $fileArray); //if a file (PDF,Doc,...) is given
                 } else {
                     $sendThisMail = $this->get('email_service')
-                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath='', $fileName=''); //if NOT a file is given
+                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath=''); //if NOT a file is given
                 }
                 
                 /**
@@ -276,6 +286,8 @@ class FrontendController extends Controller {
             $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
             $meeting_name = $meeting->getName();
             $meeting_files = $meeting->getFile();
+            foreach($meeting_files as $meeting_file){
+            dump($meeting_file);}die;
             $meeting_date = $meeting->getDate()->format('d.m.Y');;
             
             $meeting_minutes = [];
@@ -333,31 +345,38 @@ class FrontendController extends Controller {
                     true //overwriting existing file
                 );
                 
-                $meeting = $repo->findOneBy(['id' => $_GET['id']]);
-                $em = $this->getDoctrine()->getManager();
-                $meeting->setPdfFile($pdfFilename);
-                $meeting->setIsComplete(1);
-                $em->flush();
+                
                 
                 $participants = $meeting->getEmails();
-                dump($participants);die;
-//                foreach($participants as $participant)
-//                {
-//                   $message = (new \Swift_Message('Hello Email'))
-//                    ->setFrom('baldede@skygate.de')
-//                    ->setTo($participant)
-//                    ->setBody(
-//                        $this->renderView(
-//                            // app/Resources/views/Emails/registration.html.twig
-//                            'emails/created_protocoll_mail.html.twig',
-//                            array('meeting_name' => $meeting_name,
-//                                'meeting_date' => $meeting_date)
-//                        ),
-//                        'text/html'
-//                    );
-//
-//                    $this->get('mailer')->send($message);
-//                }
+                $pdfFile = 'uploads/pdf-files/' .$pdfFilename;
+                $participant = explode(';', $participants);
+                foreach($participant as $p)
+                {
+                   $message = (new \Swift_Message('Protokoll für das Meeting ' .$meeting_name))
+                    ->setFrom('baldede@skygate.de')
+                    ->setTo($p)
+                    ->setBody(
+                        $this->renderView(
+                            // app/Resources/views/Emails/registration.html.twig
+                            'emails/created_protocoll_mail.html.twig',
+                            array('meeting_name' => $meeting_name,
+                                'meeting_date' => $meeting_date,
+                                'pdf_file' => $pdfFile)
+                        ),
+                        'text/html'
+                    );
+
+                    $this->get('mailer')->send($message);
+                }
+                if($message){
+                    $meeting = $repo->findOneBy(['id' => $_GET['id']]);
+                    $em = $this->getDoctrine()->getManager();
+                    $meeting->setPdfFile($pdfFilename);
+                    $meeting->setIsComplete(1);
+                    $em->flush();
+                } else {
+                    echo "Fehler!";
+                }
                 
                 return $this->redirectToRoute('home');
             }

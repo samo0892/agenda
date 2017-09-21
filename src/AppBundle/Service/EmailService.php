@@ -67,7 +67,7 @@ class EmailService
         $place = $form["place"]->getData();
         $objective = $form["emails"]->getData();
         $isAttending = $form["type"]->getData();
-        $file = $form["file"]->getData();
+        $file = $form["files"]->getData();
         $description = $form["description"]->getData();
         
         $params = array(
@@ -91,9 +91,14 @@ class EmailService
         return $mailBody;
     }
     
-    public function sendEmailToParticipants($form, $templatePath, $tmpFolder, $filePath, $fileName) {
-        $mailBody = $this->renderHtmlMail($form, $templatePath, $filePath);
-        $mailBody .= "<a href='$filePath'>" . $fileName . "</a>";
+    public function sendEmailToParticipants($form, $templatePath, $tmpFolder, $fileArray) {
+        
+        $mailBody = $this->renderHtmlMail($form, $templatePath);
+        foreach($fileArray as $file){
+            $filePath = $file->getPath();
+            $fileName = $file->getname();
+            $mailBody .= "<a href='$filePath'>" . $fileName . "</a><br />";
+        }
         $subject = "Ein neues Meeting wurde erstellt";
         $sendTo = $form->get('emails')->getData();
 
