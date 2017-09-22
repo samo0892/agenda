@@ -281,20 +281,19 @@ class FrontendController extends Controller {
             
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
             $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
+            $fileRepo = $this->getDoctrine()->getRepository('AppBundle:File');
             $meeting = $repository->findOneBy(['id' => $_GET['id']]);
             $meeting_id = $meeting->getId();
             $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
+            $meeting_files = $fileRepo->findBy(['meeting' => $_GET['id']]);
             $meeting_name = $meeting->getName();
-            $meeting_files = $meeting->getFile();
-            foreach($meeting_files as $meeting_file){
-            dump($meeting_file);}die;
-            $meeting_date = $meeting->getDate()->format('d.m.Y');;
+            $meeting_date = $meeting->getDate()->format('d.m.Y');
             
             $meeting_minutes = [];
-            
             foreach($agendas as $agenda){
                 $meeting_minutes[] = $agenda->getMinutes();
             }
+            
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $startedMeeting = $form->getData();
@@ -429,16 +428,19 @@ class FrontendController extends Controller {
         $form = $this->createForm(DetailsType::class, $meeting);
         $session = $request->getSession();
         $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
+        $fileRepo = $this->getDoctrine()->getRepository('AppBundle:File');
         $userId = $session->get('id');
         $showForm = true;
 
         if ($userId) {
             $meetings = $repo->findAll();
             $meeting = $repo->findOneBy(['id' => $_GET['id']]);
+            $meeting_files = $fileRepo->findBy(['meeting' => $_GET['id']]);
+//            dump($meeting_files);die;
             $em = $this->getDoctrine()->getManager();
             
             if ($meeting) {
-                $this->get('detail_service')->getDetails($form, $meeting);
+                $this->get('detail_service')->getDetails($form, $meeting, $meeting_files);
             }
             $form->handleRequest($request);
 
@@ -464,7 +466,7 @@ class FrontendController extends Controller {
             }
 
             return $this->render(
-                            'default/details.html.twig', array('form' => $form->createView(), 'showForm' => $showForm)
+                            'default/details.html.twig', array('form' => $form->createView(), 'showForm' => $showForm, 'meeting_files' => $meeting_files)
             );
         } else {
             return $this->render('default/need_login.html.twig', array());

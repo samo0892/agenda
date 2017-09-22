@@ -1,0 +1,10 @@
+<html>
+    {% block body %}
+        <h3>Protokoll für das Meeting <b>{{ meeting_name }}</b></h3>
+        <p>Unten im Link dieser Mail finden Sie einen Protokoll, welcher während des Meetings <b>{{ meeting_name }}</b> am <b>{{ meeting_date }}</b>
+        gemacht wurde.</p>
+        <br />
+        
+        <a href="{{pdf_file}}">Zum downloaden der Datei, auf diesen Link klicken</a>
+    {% endblock %}    
+</html>

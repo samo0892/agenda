@@ -45,7 +45,7 @@
         <br />
         {% if meeting_files %}
             {% for meeting_file in meeting_files  %}
-                <a href="file:///C:/xampp/htdocs/projekte/SkyGateAgenda/web/{{meeting_file}}"><b>{{meeting_file}}</b></a><br />
+                <a href="{{meeting_file.path}}"><b>{{meeting_file.name}}</b></a><br />
             {% endfor %}
         {% else %}
             <p>Für dieses Meeting sind keine Dateien vorhanden.</p>

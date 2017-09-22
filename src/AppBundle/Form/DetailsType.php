@@ -5,12 +5,15 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Entity\Meeting;
 
 class DetailsType extends AbstractType
 {
@@ -77,13 +80,10 @@ class DetailsType extends AbstractType
                 )
             ))
                 
-            ->add('file', TextType::class, array('label' => 'Datei',
-                'constraints' => array(
-                    new Assert\NotBlank(array(
-                        'message' => 'Feld darf nicht leer sein'
-                    ))
-                )
-            ))    
+            ->add('file', CollectionType::class, array(
+                'entry_type' => FileType::class,
+                'entry_options' => array('label' => false),
+            ))   
             
            ->add('update', SubmitType::class, array('label' => 'Update'), array('constraints' => array(
                         new Assert\NotBlank(array(
@@ -96,5 +96,11 @@ class DetailsType extends AbstractType
                             'message' => 'Feld darf nicht leer nicht sein'))
                     ))
         );     
+    }
+    
+    public function configureOptions(OptionsResolver $resolver) {
+        $resolver->setDefaults(array(
+            'data_class' => Meeting::class,
+        ));
     }
 }

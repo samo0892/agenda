@@ -38,7 +38,7 @@ class File
    /**
      * @var Meeting     
      * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="file")
-     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id", onDelete="set null")
+     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id", onDelete="cascade")
      */
     private $meeting;
     

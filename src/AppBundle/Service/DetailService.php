@@ -2,10 +2,14 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\File;
+
 class DetailService
 {
-    public function getDetails($form, $meeting)
+    public function getDetails($form, $meeting, $meeting_files)
     {
+        $file = new File();
+        $fileNames = [];
         $form->get('name')->setData($meeting->getName());
         $form->get('date')->setData($meeting->getDate());
         $form->get('startTime')->setData($meeting->getStarttime());
@@ -13,8 +17,17 @@ class DetailService
         $form->get('place')->setData($meeting->getPlace());
         $form->get('emails')->setData($meeting->getEmails());
         $form->get('type')->setData($meeting->getType());
-        $form->get('file')->setData($meeting->getFile());
-    }
+        foreach ($meeting_files as $meeting_file){
+            $file->getName($meeting_file);
+            
+        }
+//            dump($fileNames);
+        foreach($fileNames as $fileName){
+         $file = $fileName->getName();  
+         dump($file);
+         $fileArray[] = $file;
+            
+    }die;$form->get('file')->setData($file);}
     
     public function updateDetails($form, $meeting)
     {
