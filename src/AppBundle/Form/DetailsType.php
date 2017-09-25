@@ -80,22 +80,30 @@ class DetailsType extends AbstractType
                 )
             ))
                 
-            ->add('file', CollectionType::class, array(
-                'entry_type' => FileType::class,
+            
+
+            ->add('uploaded_files', CollectionType::class, array(
+                'label' => 'Hochgeladene Daten',
+                'entry_type' => TextType::class,
                 'entry_options' => array('label' => false),
             ))   
             
            ->add('update', SubmitType::class, array('label' => 'Update'), array('constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'))
-                    ))
-                )
+                ))
+            )
                 
-        ->add('delete', SubmitType::class, array('label' => 'Delete'), array('constraints' => array(
-                        new Assert\NotBlank(array(
-                            'message' => 'Feld darf nicht leer nicht sein'))
-                    ))
-        );     
+            ->add('delete', SubmitType::class, array('label' => 'Delete'), array('constraints' => array(
+                            new Assert\NotBlank(array(
+                                'message' => 'Feld darf nicht leer nicht sein'))
+                        ))
+            )
+
+            ->add('files', FileType::class, array('label' => 'Datei hinzufügen',
+                        'required' => false,
+                        'multiple' => true,
+            ));
     }
     
     public function configureOptions(OptionsResolver $resolver) {

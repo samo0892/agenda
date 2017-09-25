@@ -32,3 +32,4 @@ services:
         
     detail_service:
         class: AppBundle\Service\DetailService
+        arguments: [ "@doctrine.orm.entity_manager" ]

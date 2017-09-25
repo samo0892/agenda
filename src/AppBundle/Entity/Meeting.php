@@ -82,6 +82,14 @@ class Meeting
      */
     private $emails;
     
+    
+    /**
+     * @ORM\OneToMany(targetEntity="File", mappedBy="meeting", cascade={"persist"})
+     *
+     * @var array
+     */
+    private $uploadedFiles;
+    
     /**
      * @ORM\OneToMany(targetEntity="File", mappedBy="meeting", cascade={"persist"})
      *
@@ -112,7 +120,7 @@ class Meeting
      *
      * @Assert\File
      */
-    private $pdfFile;
+    private $pdfFile = null;
     
     public function __construct() {
         
@@ -245,7 +253,7 @@ class Meeting
      *
      * @return array
      */
-    public function getFile()
+    public function getFiles()
     {
         return $this->files;
     }
@@ -255,9 +263,29 @@ class Meeting
      * @param array $files
      * @return $this
      */
-    public function setFile($files)
+    public function setFiles($files)
     {
         $this->files = $files;
+        return $this;
+    }
+    
+    /** Returns the list of uploaded files
+     *
+     * @return array
+     */
+    public function getUploadedFiles()
+    {
+        return $this->uploadedFiles;
+    }
+    
+    /**
+     * 
+     * @param array $uploadedFiles
+     * @return $this
+     */
+    public function setUploadedFiles($uploadedFiles)
+    {
+        $this->uploadedFiles = $uploadedFiles;
         return $this;
     }
     

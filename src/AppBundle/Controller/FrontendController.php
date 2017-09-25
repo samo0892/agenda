@@ -141,7 +141,7 @@ class FrontendController extends Controller {
                 $meeting = $form->getData();
                 
                 $agendas = $meeting->getAgendas();
-                $files = $meeting->getFile();
+                $files = $meeting->getFiles();
                 //dump($files); exit;
                 
                 
@@ -164,7 +164,7 @@ class FrontendController extends Controller {
                     }
                 }
                 
-                $meeting->setFile($fileArray);
+                $meeting->setFiles($fileArray);
                 
                 $em->persist($meeting);
                 $em->flush();
@@ -425,6 +425,7 @@ class FrontendController extends Controller {
      */
     public function detailsAction(Request $request) {
         $meeting = new Meeting();
+        $meeting_files = new File;
         $form = $this->createForm(DetailsType::class, $meeting);
         $session = $request->getSession();
         $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
@@ -450,10 +451,10 @@ class FrontendController extends Controller {
                     $em->flush();
                     $meetings = $repo->findAll();
                     $this->addFlash(
-                            'notice', 'Der User wurde erfolgreich gelöscht.'
+                            'notice', 'Das Meeting wurde erfolgreich gelöscht.'
                     );
 
-                    return $this->render('default/details.html.twig', array('form' => $form->createView(), 'user' => $user));
+                    return $this->render('default/actual_meetings.html.twig', array('form' => $form->createView(),'meetings' => $meetings));
                 } else {
                     $this->get('detail_service')->updateDetails($form, $meeting);
 
