@@ -1,0 +1,33 @@
+<html>
+    {% block body %}
+        <h3>Update zu einem Meeting</h3>
+        <p>Es gab Änderungen bei einem  Meeting, zu welchem Sie eingeladen wurden. Die Änderungen können Sie dieser Mail entnehmen.</p>
+        <br />
+        {% if  meeting_name  is defined %}
+            <p>Thema des Meetings: <b>{{ meeting_name }}</b></p>
+        {% endif %}
+        {% if  type  is defined %}
+            <p>Art des Meetings: <b>{{ type }}</b></p>
+        {% endif %}
+        {% if description is defined %}
+            <p>Beschreibung des Meetings: <b>{{ description }}</b></p>
+        {% endif %}
+        {% if date is defined %}
+            <p>Datum des Meetings: <b>{{ date|date('Y-m-d') }}</b></p>
+        {% endif %}
+        {% if startTime is defined %}
+            <p>Startzeit des Meetings: <b>{{ startTime|date('H:m') }}</b></p>
+        {% endif %}
+        {% if endTime is defined %}
+            <p>Endzeit des Meetings: <b>{{ endTime|date('H:m') }}</b></p>
+        {% endif %}
+        {% if place is defined %}
+            <p>Ort: <b>{{ place }}</b></p>
+        {% endif %}
+        <p>Vorlagen für das Meeting: </p>
+{#        {{ filePath }}#}
+{#        <p>{{ meeting2 }}<p>#}
+        <a href="C:/xampp/htdocs/projekte/SkyGateAgenda/web/AppBundle/tmp/meeting.ics">Termin in Kalender speichern</a><br />
+    {% endblock %}    
+</html>
+

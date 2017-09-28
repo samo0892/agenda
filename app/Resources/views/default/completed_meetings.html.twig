@@ -22,23 +22,34 @@
     {% include 'default/flash_messages.html.twig' %}
     
     {% if meetings %}
-        <table border="1" align="center" class="table table-bordered" style="margin-left: 50px; margin-right: 50px">
-            <tr>
-                <th>Name</th>
-                <th>Datum</th>
-                <th>Ort</th>
-            </tr>
-                {% for meeting in meetings %}
+        <div class="col-md-8">
+            <table border="1" align="center" class="table table-bordered table-hover" style="margin-left: 50px; margin-right: 50px">
+                <thead style="background-color: black">
                     <tr>
-                        <td><a href="completed_details?id={{meeting.Id}}" style="color:black">{{ meeting.name }}</a></td>
-                        <td><a href="completed_details?id={{meeting.Id}}" style="color:black">{{ meeting.date|date('d-m-Y') }}</a></td>
-                        <td><a href="completed_details?id={{meeting.Id}}" style="color:black">{{ meeting.place }}</a></td>
-                        <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.Id}}"><button class="btn btn-danger">Löschen</button></a> 
-                            <a href="protokoll_anzeigen?id={{meeting.id}}"><button class="btn btn-info">Protokoll anzeigen</button></a></td>
+                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Name</p></a></th>
+                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Datum</p></a></th>
+                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Ort</p></a></th>
+                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Optionen</p></a></th>
                     </tr>
-                {% endfor %}
-            {% else %}
-                <p>Es sind keine abgeschlossene Meetings vorhanden</p>
-        </table>
+                </thead>
+                <tbody>
+                    {% for meeting in meetings %}
+                        <tr>
+                            <td><a href="completed_details?id={{meeting.id}}" style="color:black">{{ meeting.name }}</a></td>
+                            <td><a href="completed_details?id={{meeting.id}}" style="color:black">{{ meeting.date|date('d-m-Y') }}</a></td>
+                            <td><a href="completed_details?id={{meeting.id}}" style="color:black">{{ meeting.place }}</a></td>
+                            <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.id}}"><button class="btn btn-danger">Löschen</button></a> 
+                                <a href="protokoll_anzeigen?id={{meeting.id}}"><button class="btn btn-info">Protokoll anzeigen</button></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                    <p>Es sind keine abgeschlossene Meetings vorhanden</p>
+            </table>
+            <br />
+            <div class="pagerfanta" align="center">
+                {{ pagerfanta(my_pager) }}
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

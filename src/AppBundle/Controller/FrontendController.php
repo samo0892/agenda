@@ -19,6 +19,9 @@ use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 class FrontendController extends Controller {
     
@@ -142,7 +145,6 @@ class FrontendController extends Controller {
                 
                 $agendas = $meeting->getAgendas();
                 $files = $meeting->getFiles();
-                //dump($files); exit;
                 
                 
                 /**
@@ -164,7 +166,9 @@ class FrontendController extends Controller {
                     }
                 }
                 
-                $meeting->setFiles($fileArray);
+                if(!empty($fileArray)){
+                    $meeting->setFiles($fileArray);
+                }
                 
                 $em->persist($meeting);
                 $em->flush();
@@ -197,7 +201,7 @@ class FrontendController extends Controller {
                 
                 $this->get('ics_file_service')->createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location, $description);
 
-                if($file){
+                if(isset($file)){
                     $sendThisMail = $this->get('email_service')
                     ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $fileArray); //if a file (PDF,Doc,...) is given
                 } else {
@@ -236,9 +240,45 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
 
         if ($userId) {
+            $headNames = array('Name','Date', 'Place', 'StartTime', 'Optionen');
+            $dir = isset($_GET['dir']) ? $_GET['dir'] : 'DESC';
+            $sort = isset($_GET['sort']) ? $_GET['sort'] : '' ;
+            
+            if ($dir == "ASC") {
+                $dir = "DESC";
+            } else {
+                $dir = "ASC";
+            }
+            
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meetingFromDb = $repository->findByIsComplete('0');
-            return $this->render('default/actual_meetings.html.twig', array('meetings' => $meetingFromDb));
+
+        
+            if($sort){
+                $query = $repository->createQueryBuilder("meeting")
+                    ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
+                    ->where('meeting.isComplete = 0')
+                    ->orderBy("meeting." . lcfirst($sort), $dir)
+                    ->getQuery();
+            }else{
+                $query = $repository->createQueryBuilder("meeting")
+                        ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
+                        ->where('meeting.isComplete = 0')
+                        ->orderBy("meeting.date", 'ASC')
+                        ->getQuery();
+            }
+            
+            $meetingFromDb = $query->execute(); //execute();
+            
+            $page = $request->query->has("page") && intval($request->query->get("page")) > 1 ? intval($request->query->get("page")) : 1;
+
+
+        $pagerfanta = new Pagerfanta(new ArrayAdapter($meetingFromDb));
+        $pagerfanta->setMaxPerPage(10);
+        $pagerfanta->setCurrentPage($page);
+
+        $currentPageResults = $pagerfanta->getCurrentPageResults();
+            
+            return $this->render('default/actual_meetings.html.twig', array('meetings' => $currentPageResults, 'dir' => $dir, 'sort' => $sort, 'my_pager' => $pagerfanta, 'headNames' => $headNames));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
@@ -254,9 +294,44 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
 
         if ($userId) {
+            $dir = isset($_GET['dir']) ? $_GET['dir'] : 'DESC';
+            $sort = isset($_GET['sort']) ? $_GET['sort'] : 'date';
+            
+            if ($dir == "ASC") {
+                $dir = "DESC";
+            } else {
+                $dir = "ASC";
+            }
+            
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
-            $meetingFromDb = $repository->findByIsComplete('1');
-            return $this->render('default/completed_meetings.html.twig', array('meetings' => $meetingFromDb));
+            if($sort){
+                $query = $repository->createQueryBuilder("meeting")
+                    ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
+                    ->where('meeting.isComplete = 1')
+                    ->orderBy("meeting." .$sort, $dir)
+                    ->getQuery();
+            }else{
+                $query = $repository->createQueryBuilder("meeting")
+                        ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
+                        ->where('meeting.isComplete = 1')
+                        ->orderBy("meeting.date", 'DESC')
+                        ->getQuery();
+            }
+            
+            $meetingFromDb = $query->execute(); //execute();
+            
+            $page = $request->query->has("page") && intval($request->query->get("page")) > 1 ? intval($request->query->get("page")) : 1;
+
+
+        $pagerfanta = new Pagerfanta(new ArrayAdapter($meetingFromDb));
+        $pagerfanta->setMaxPerPage(10);
+        $pagerfanta->setCurrentPage($page);
+
+        $currentPageResults = $pagerfanta->getCurrentPageResults();
+            
+            
+            
+            return $this->render('default/completed_meetings.html.twig', array('meetings' => $currentPageResults, 'dir' => $dir, 'sort' => $sort, 'my_pager' => $pagerfanta,));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
@@ -430,18 +505,22 @@ class FrontendController extends Controller {
         $session = $request->getSession();
         $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
         $fileRepo = $this->getDoctrine()->getRepository('AppBundle:File');
+        $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
         $userId = $session->get('id');
         $showForm = true;
+        $icsFileName = 'meeting.ics';
+        $tmpFolder = ($_SERVER["DOCUMENT_ROOT"] . '/AppBundle/tmp/' . $icsFileName);
 
         if ($userId) {
             $meetings = $repo->findAll();
             $meeting = $repo->findOneBy(['id' => $_GET['id']]);
             $meeting_files = $fileRepo->findBy(['meeting' => $_GET['id']]);
+            $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
 //            dump($meeting_files);die;
             $em = $this->getDoctrine()->getManager();
             
             if ($meeting) {
-                $this->get('detail_service')->getDetails($form, $meeting, $meeting_files);
+                $this->get('detail_service')->getDetails($form, $meeting, $meeting_files, $agendas);
             }
             $form->handleRequest($request);
 
@@ -456,7 +535,30 @@ class FrontendController extends Controller {
 
                     return $this->render('default/actual_meetings.html.twig', array('form' => $form->createView(),'meetings' => $meetings));
                 } else {
-                    $this->get('detail_service')->updateDetails($form, $meeting);
+                    $updatedDetails = $this->get('detail_service')->updateDetails($form, $meeting);
+                    
+                /**
+                 * Creates an ics-file and sends to the participants via mail
+                 */
+                $meetingName = $form->get('name')->getData();
+                
+                $meetingStartHour = $form->get('startTime')->getData()->format("H:m");
+                $meetingStartTime = $form->get('date')->getData()->format("d-m-Y ");
+                $meetingStartTime .= $meetingStartHour;
+                $meetingEndHour = $form->get('endTime')->getData()->format("H:m");
+                $meetingEndTime = $form->get('date')->getData()->format("d-m-Y ");
+                $meetingEndTime .= $meetingEndHour;
+                $description = $form->get('description')->getData();
+                $location = $form->get('place')->getData();
+                
+                $this->get('ics_file_service')->createIcsFile($meetingName, $meetingStartTime, $meetingEndTime, $tmpFolder, $location, $description);
+                    
+                $fileArray = $fileRepo->findBy(['meeting' => $_GET['id']]);
+                $templatePath = 'emails/updated_meeting_mail.html.twig';
+                if($updatedDetails){
+                    $sendThisMail = $this->get('email_service')
+                    ->sendEmailToParticipants($form, $templatePath, $tmpFolder, $fileArray); //if a file (PDF,Doc,...) is given
+                }
 
                     $this->addFlash(
                             'notice', 'Die Daten wurden erfolgreich aktualisiert.'
@@ -484,8 +586,12 @@ class FrontendController extends Controller {
         $form = $this->createForm(CompletedDetailsType::class, $meeting);
         $session = $request->getSession();
         $repo = $this->getDoctrine()->getRepository('AppBundle:Meeting');
+        $fileRepo = $this->getDoctrine()->getRepository('AppBundle:File');
+        $agendaRepo = $this->getDoctrine()->getRepository('AppBundle:Agenda');
         $userId = $session->get('id');
         $showForm = true;
+        $meeting_files = $fileRepo->findBy(['meeting' => $_GET['id']]);
+        $agendas = $agendaRepo->findBy(['meeting' => $_GET['id']]);
 
         if ($userId) {
             $meeting = $repo->findAll();
@@ -494,7 +600,7 @@ class FrontendController extends Controller {
             $em = $this->getDoctrine()->getManager();
 
             if ($meeting) {
-                $this->get('detail_service')->getDetails($form, $meeting);;
+                $this->get('detail_service')->getDetails($form, $meeting, $meeting_files, $agendas);
             }
 
             return $this->render(

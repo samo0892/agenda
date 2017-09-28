@@ -22,15 +22,71 @@
                         {{ form_row(form.endTime) }}
                         {{ form_row(form.place) }}
                         {{ form_row(form.emails) }}
+                        {{ form_row(form.description) }}
                         {{ form_row(form.type) }}
+                        <p id="email-fields-list" data-prototype="{{ form_widget(form.agendas.vars.prototype)|e }}">
+                        {% for emailField in form.agendas %}
+                            {{ form_errors(emailField) }}
+                            {{ form_widget(emailField) }}
+                        {% endfor %}
+                        <p>
+                        <a href="#" class="collection-add btn btn-default" title="Agendapunkt hinzufügen" id="add-another-email"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                        <a href="#" class="collection-add btn btn-default" title="Agendapunkt entfernen" id="delete-agenda"><span class="glyphicon glyphicon-trash"></span></a>
                         {{ form_row(form.uploaded_files) }}
                         {{ form_row(form.files) }}
                         {{ form_end(form) }}<br /><br />
-                        <a href="{{ path('actual_meetings') }}"><button class="btn-default btn">Zurück</button></a>
+                        <a href="{{ path('actual_meetings') }}"><button class="btn-default btn">Zurück</button></a>                        
                     </div>
 
                     {% include 'default/flash_messages.html.twig' %}
 
+                    
+                    <script type="text/javascript">
+                    // keep track of how many email fields have been rendered
+{#                    var emailCount = '{{ form.agendas|length }}';#}
+                    var emailCount = '1';
+                    jQuery(document).ready(function() {
+                        
+                        addAnAgenda();
+                        
+                        jQuery('#add-another-email').click(function(e) {
+                            e.preventDefault();
+
+                            addAnAgenda();
+                        });
+                        
+                        jQuery('#delete-agenda').click(function(e) {
+                            e.preventDefault();
+
+                            deleteAnAgenda();
+                        });
+                        
+                        function addAnAgenda() {
+                            var emailList = jQuery('#email-fields-list');
+                           
+                            // grab the prototype template
+                            var newWidget = emailList.attr('data-prototype');
+                            // replace the "__name__" used in the id and name of the prototype
+                            // with a number that's unique to your emails
+                            // end name attribute looks like name="contact[emails][2]"
+                            newWidget = newWidget.replace(/__name__/g, emailCount);
+                            emailCount++;
+
+                            // create a new list element and add it to the list
+                            var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
+                            newLi.appendTo(emailList);
+                        }
+                        
+                        function deleteAnAgenda(){
+                            console.log(emailCount);
+                                if(emailCount > 0){
+                                    emailCount--;
+                                }
+                                $('#details_agendas_'+ emailCount).remove();   
+                            
+                        }
+                    })
+                </script> 
                 </div>
             </div>
         </div>

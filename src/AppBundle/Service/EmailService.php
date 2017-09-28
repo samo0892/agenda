@@ -94,10 +94,12 @@ class EmailService
     public function sendEmailToParticipants($form, $templatePath, $tmpFolder, $fileArray) {
         
         $mailBody = $this->renderHtmlMail($form, $templatePath);
-        foreach($fileArray as $file){
-            $filePath = $file->getPath();
-            $fileName = $file->getname();
-            $mailBody .= "<a href='$filePath'>" . $fileName . "</a><br />";
+        if(!empty($fileArray)){
+            foreach($fileArray as $file){
+                $filePath = $file->getPath();
+                $fileName = $file->getname();
+                $mailBody .= "<a href='$filePath'>" . $fileName . "</a><br />";
+            }
         }
         $subject = "Ein neues Meeting wurde erstellt";
         $sendTo = $form->get('emails')->getData();

@@ -15,7 +15,7 @@
         <h3>Agendapunkte</h3>
         <div id = "countdownExample">
             {% for agenda in agendas %}
-                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (60000*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
+                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (600*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
             {% endfor %}
         </div>
         <br />
@@ -59,40 +59,41 @@
     $(document).ready(function () {
         'use strict';
         
-            var emailCount = '{{ form.notice|length }}';
+        var emailCount = '{{ form.notice|length }}';
 
-                        jQuery(document).ready(function() {
+        jQuery(document).ready(function() {
 
-                            addAnAgenda();
+            addAnAgenda();
 
-                            jQuery('#add-another-email').click(function(e) {
-                                e.preventDefault();
+            jQuery('#add-another-email').click(function(e) {
+                e.preventDefault();
 
-                                addAnAgenda();
-                            });
+                addAnAgenda();
+            });
 
-                            function addAnAgenda() {
-                                var emailList = jQuery('#email-fields-list');
+            function addAnAgenda() {
+                var emailList = jQuery('#email-fields-list');
 
-                                // grab the prototype template
-                                var newWidget = emailList.attr('data-prototype');
-                                // replace the "__name__" used in the id and name of the prototype
-                                // with a number that's unique to your emails
-                                // end name attribute looks like name="contact[emails][2]"
-                                newWidget = newWidget.replace(/__name__/g, emailCount);
-                                emailCount++;
+                // grab the prototype template
+                var newWidget = emailList.attr('data-prototype');
+                // replace the "__name__" used in the id and name of the prototype
+                // with a number that's unique to your emails
+                // end name attribute looks like name="contact[emails][2]"
+                newWidget = newWidget.replace(/__name__/g, emailCount);
+                emailCount++;
 
-                                // create a new list element and add it to the list
-                                var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
-                                newLi.appendTo(emailList);
-                            }
-                        })    
+                // create a new list element and add it to the list
+                var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
+                newLi.appendTo(emailList);
+            }
+        })    
 
         var timersElements = $('[data-time]'),
         timers = [];
         console.log(timersElements);
         var dir;
         var i = 1;
+        var timer_up = '';
 
         $.each(timersElements, function (k, timerElement) {
             var t = {
@@ -103,11 +104,36 @@
                 "dir": "down",
 
                 "interval": setInterval(function () {
-                    console.log(this.dir = dir);
+                    
+                    
+                    {#if(getCookie(t.id + '_up')){
+                        timer_up = getCookie(t.id + '_up');
+                        console.log(timer_up);
+                        dir = "up";
+                        {#setCookie(t.id + '_up', $('.active').text(), 1);
+                        $('.active').css("color", "red");
+                            $('.active').css("font-size", "25px");
+                            t.time = t.time + 15;
+                            if (t.time >= 0) {
+                                t.show();
+                            } else {
+                                dir = "down";
+                            }
+                    } else if(getCookie(t.id + '_down')){
+                        timer_down = getCookie(t.id + '_down');
+                        dir = "down";
+                    }#}
+                    
                     if(dir == "up"){
                         if(t.active == true){
+                            console.log(timer_up);
+                            setCookie(t.id + '_up', $('.active').text(), 1);
                             $('.active').css("color", "red");
                             $('.active').css("font-size", "25px");
+                            {#if(timer_up){
+                               t.time += timer_up;
+                               timer_up = '';
+                            }#}
                             t.time = t.time + 15;
                             if (t.time >= 0) {
                                 t.show();
@@ -118,6 +144,7 @@
                     }  
                     if (dir == "down"){
                        if(t.active == true){
+                           setCookie(t.id +'_down', $('.active').text(), 1);
                            $('.active').css("font-size", "25px");
                             t.time = t.time - 15;
                             if (t.time >= 0) {
@@ -134,7 +161,7 @@
                     $(timerElement).text(millito(this.time));
                 },
                 "countdown": function () {
-                    dir = "down"
+                    dir = "down";
                     t.active = true;
                     t.interval();
 
@@ -189,10 +216,30 @@
         function millito(millis){
             var minutes = Math.floor(millis / 60000);
             var seconds = ((millis % 60000) / 1000).toFixed(0);
-            return minutes + ":" + (seconds < 10 ? '0' : '') + (seconds-1);
+            return minutes + ":" + (seconds < 10 ? '0' : '') + (seconds);
+        }
+        
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
         }
 
-
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
     });
 
 </script>

@@ -83,6 +83,7 @@ class CreateMeetingType extends AbstractType {
                         'Stehung' => 'Stehung'
                     ),
                 ))
+                
                 ->add('description', TextareaType::class, array('label' => 'Beschreibung des Meetings',
                     'constraints' => array(
                         new Assert\NotBlank(array(
@@ -90,6 +91,7 @@ class CreateMeetingType extends AbstractType {
                         ))
                     )
                 ))
+                
                 ->add('agendas', CollectionType::class, array(
                     'entry_type' => AgendaType::class,
                     'allow_add' => true,
@@ -97,6 +99,7 @@ class CreateMeetingType extends AbstractType {
                     'prototype' => true,
                     'label' => false,
                 ))
+                
                 ->add('files', FileType::class, array('label' => 'Datei hinzufügen',
                     'required' => false,
                     'multiple' => true,

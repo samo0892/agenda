@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\File;
+use AppBundle\Entity\Agenda;
 use AppBundle\Entity\Meeting;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
@@ -14,7 +15,7 @@ class DetailService
         $this->em = $entityManager;
     }
     
-    public function getDetails($form, $meeting, $meeting_files)
+    public function getDetails($form, $meeting, $meeting_files, $agendas)
     {
         $file = new File();
         $fileNames = [];
@@ -24,23 +25,21 @@ class DetailService
         $form->get('endTime')->setData($meeting->getEndtime());
         $form->get('place')->setData($meeting->getPlace());
         $form->get('emails')->setData($meeting->getEmails());
+        $form->get('description')->setData($meeting->getDescription());
         $form->get('type')->setData($meeting->getType());
+        
+        foreach ($agendas as $agenda){
+            $agendaNames[] = $agenda->getName();
+        }
+        
         foreach ($meeting_files as $meeting_file){
             $fileNames[] = $meeting_file->getName();
         }
-//            dump($fileNames);
-//        foreach($fileNames as $fileName){
-        ($form->get('uploaded_files')->setData($fileNames));
-//    }}
-    
-
-            
         
-        
-//        foreach($fileNames as $fileName){
-            
-//        }die;
-    }
+        $form->get('agendas')->setData($agendas);
+        if($form->get('uploaded_files')){
+            $form->get('uploaded_files')->setData($fileNames);}
+        }
     
     public function updateDetails($form, $meeting)
     {
@@ -51,36 +50,43 @@ class DetailService
         $newData->setEndtime($form->get('endTime')->getData());
         $newData->setPlace($form->get('place')->getData());
         $newData->setObjective($form->get('emails')->getData());
+        $newData->setDescription($form->get('description')->getData());
         $newData->setIsAttending($form->get('type')->getData());
         $newData->setFiles($form->get('files')->getData());
         $files = $meeting->getFiles();
-                //dump($files); exit;
+        $agendas = $form->get('agendas')->getData();
                 
                 
-                /**
-                 * Adds and saves the uploaded file in $filePath 
-                 */
-                foreach($files as $file){
-                    if($file){
-                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                        $file = $file->move('brochures_directory', $fileName);
+        /**
+        * Adds and saves the uploaded file in $filePath 
+        */
+        foreach($files as $file){
+            if($file){
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file = $file->move('brochures_directory', $fileName);
 
-                        $filePath = 'file:///' . $file->getRealPath();
-                        $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
+                $filePath = 'file:///' . $file->getRealPath();
+                $filePath = str_replace('\\', '/', $filePath); // Replace backslashes with forwardslashes
 
-                        $meetingFile = new File;
-                        $meetingFile->setName($fileName);
-                        $meetingFile->setPath($filePath);
-                        $meetingFile->setMeeting($meeting);
-                        $fileArray[] = $meetingFile;
-                        
-                    }
-                }
-                if(isset($fileArray)){
-                    $newData->setFiles($fileArray);
-                }
+                $meetingFile = new File;
+                $meetingFile->setName($fileName);
+                $meetingFile->setPath($filePath);
+                $meetingFile->setMeeting($meeting);
+                $fileArray[] = $meetingFile;
+
+            }
+        }
                 
-        
+        if(isset($fileArray)){
+            $newData->setFiles($fileArray);
+        }
+                
+        foreach($agendas as $agenda) {
+            $agenda->setMeeting($meeting);
+            $this->em->persist($agenda);
+        }
+        $this->em->flush();
+                   
         $this->em->getRepository('AppBundle:Meeting');
         $this->em->persist($meeting);
         $this->em->flush();           

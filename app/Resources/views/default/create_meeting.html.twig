@@ -38,14 +38,15 @@
                         {{ form_widget(emailField) }}
                     {% endfor %}
                 <p>
-                <a href="#" id="add-another-email">Einen weiteren Agendapunkt hinzufügen</a>
+                <a href="#" class="collection-add btn btn-default" title="Agendapunkt hinzufügen" id="add-another-email"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                <a href="#" class="collection-add btn btn-default" title="Agendapunkt entfernen" id="delete-agenda"><span class="glyphicon glyphicon-trash"></span></a>
                 {{ form_row(form.files) }}
                 {{ form_end(form) }}
 
                 <script type="text/javascript">
                     // keep track of how many email fields have been rendered
-                    var emailCount = '{{ form.agendas|length }}';
-
+{#                    var emailCount = '{{ form.agendas|length }}';#}
+                    var emailCount = '1';
                     jQuery(document).ready(function() {
                         
                         addAnAgenda();
@@ -56,9 +57,15 @@
                             addAnAgenda();
                         });
                         
+                        jQuery('#delete-agenda').click(function(e) {
+                            e.preventDefault();
+
+                            deleteAnAgenda();
+                        });
+                        
                         function addAnAgenda() {
                             var emailList = jQuery('#email-fields-list');
-
+                           
                             // grab the prototype template
                             var newWidget = emailList.attr('data-prototype');
                             // replace the "__name__" used in the id and name of the prototype
@@ -70,6 +77,17 @@
                             // create a new list element and add it to the list
                             var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
                             newLi.appendTo(emailList);
+                        }
+                        
+                        function deleteAnAgenda(){
+                            if(emailCount != 2){
+                                if(emailCount > 0){
+                                    emailCount--;
+                                }
+                                $('#create_meeting_agendas_'+ emailCount).remove();   
+                            } else {
+                                console.log('Das letzte Feld kann nicht gelöscht werden!');
+                            }
                         }
                     })
                 </script> 
