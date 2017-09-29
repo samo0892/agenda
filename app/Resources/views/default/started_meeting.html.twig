@@ -15,7 +15,7 @@
         <h3>Agendapunkte</h3>
         <div id = "countdownExample">
             {% for agenda in agendas %}
-                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (600*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
+                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (60000*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
             {% endfor %}
         </div>
         <br />
@@ -60,8 +60,8 @@
         'use strict';
         
         var emailCount = '{{ form.notice|length }}';
-
-        jQuery(document).ready(function() {
+        
+       
 
             addAnAgenda();
 
@@ -85,15 +85,15 @@
                 // create a new list element and add it to the list
                 var newLi = jQuery('<p> </p>', emailCount).html(newWidget);
                 newLi.appendTo(emailList);
-            }
-        })    
+            }   
 
         var timersElements = $('[data-time]'),
         timers = [];
         console.log(timersElements);
         var dir;
         var i = 1;
-        var timer_up = '';
+{#        var timer_up = '';#}
+        
 
         $.each(timersElements, function (k, timerElement) {
             var t = {
@@ -101,60 +101,67 @@
                 "id" : $(timerElement).attr('id'),
                 "time": parseInt($(timerElement).data('time'), 10),
                 "target": $(timerElement).data('target'),
-                "dir": "down",
+                "dir": "up",
 
                 "interval": setInterval(function () {
-                    
-                    
-                    {#if(getCookie(t.id + '_up')){
-                        timer_up = getCookie(t.id + '_up');
-                        console.log(timer_up);
-                        dir = "up";
-                        {#setCookie(t.id + '_up', $('.active').text(), 1);
-                        $('.active').css("color", "red");
-                            $('.active').css("font-size", "25px");
-                            t.time = t.time + 15;
-                            if (t.time >= 0) {
-                                t.show();
-                            } else {
-                                dir = "down";
-                            }
-                    } else if(getCookie(t.id + '_down')){
-                        timer_down = getCookie(t.id + '_down');
-                        dir = "down";
-                    }#}
-                    
+                   
                     if(dir == "up"){
                         if(t.active == true){
-                            console.log(timer_up);
-                            setCookie(t.id + '_up', $('.active').text(), 1);
-                            $('.active').css("color", "red");
-                            $('.active').css("font-size", "25px");
-                            {#if(timer_up){
-                               t.time += timer_up;
-                               timer_up = '';
-                            }#}
-                            t.time = t.time + 15;
-                            if (t.time >= 0) {
-                                t.show();
+                            if(timer_up){
+                                t.time = Number(timer_up.split(':')[0]) * 60 + Number(timer_up.split(':') [1]) * 1000;
+                                timer_up = '';
+                                $('.active').css("color", "red");
+                                $('.active').css("font-size", "25px");
+                                t.time = t.time + 15;
+                                if (t.time >= 0) {
+                                    t.show();
+                                } else {
+                                    
+                                    dir = "down";
+                                }
                             } else {
-                                dir = "down";
+                                setCookie(t.id + '_up', $('.active').text(), 1);
+                                $('.active').css("color", "red");
+                                $('.active').css("font-size", "25px");
+                                t.time = t.time + 15;
+                                if (t.time >= 0) {
+                                    t.show();
+                                } else {
+                                    dir = "down";
+                                }
                             }
                         }   
                     }  
                     if (dir == "down"){
                        if(t.active == true){
-                           setCookie(t.id +'_down', $('.active').text(), 1);
-                           $('.active').css("font-size", "25px");
-                            t.time = t.time - 15;
-                            if (t.time >= 0) {
-                                t.show();
+                            if(timer_down){
+                                
+                                
+                                $('.active').css("font-size", "25px");
+                                t.time = t.time - 15;
+                                if (t.time >= 0) {
+                                    t.show();
+                                } else {
+                                    dir = "up";
+                                }
                             } else {
-                                dir = "up";
+                                console.log('AAA');
+                                setCookie(t.id +'_down', $('.active').text(), 1);
+                                $('.active').css("font-size", "25px");
+                                t.time = t.time - 15;
+                                if (t.time >= 0) {
+                                    t.show();
+                                } else {
+                                    setCookie(t.id +'_down', 0, 1);
+                                    dir = "up";
+                                }
                             }
                         } 
                     }
                 }, 1),
+                
+                
+                
                         
                 "show": function () {
                     
@@ -162,6 +169,11 @@
                 },
                 "countdown": function () {
                     dir = "down";
+                    if(getCookie(t.id + '_down')){
+                        var timer_down = getCookie(t.id + '_down');
+                        t.time = Number(timer_down.split(':')[0]) * 600 * 100 + Number(timer_down.split(':') [1]) * 1000;
+                        timer_down = '';
+                    }
                     t.active = true;
                     t.interval();
 
@@ -192,8 +204,21 @@
             };
 
             timers[k] = t;
+            
+            if(getCookie(t.id + '_up')){
+                var timer_up = getCookie(t.id + '_up');
+                console.log(timer_up);
+
+            }else {
+                console.log('BB');
+                var timer_down = getCookie(t.id + '_down');
+                console.log(timer_down);
+                console.log('BB');
+            }
 
             $('.js-stop').click(function () {
+                eraseCookie(t.id + '_up');
+                setCookie(t.id +'_down', 0, 1);
                 var objectId = $('.active').data('tid') + 1;
                 var timerId = $('.active').data('tid') - 1;
                 $('.active').removeClass('active');
@@ -239,6 +264,10 @@
                 }
             }
             return "";
+        }
+        
+        function eraseCookie(name) {
+            setCookie(name,"",-1);
         }
     });
 

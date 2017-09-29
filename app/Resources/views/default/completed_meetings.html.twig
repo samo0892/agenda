@@ -26,10 +26,9 @@
             <table border="1" align="center" class="table table-bordered table-hover" style="margin-left: 50px; margin-right: 50px">
                 <thead style="background-color: black">
                     <tr>
-                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Name</p></a></th>
-                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Datum</p></a></th>
-                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Ort</p></a></th>
-                        <th><a href="abgeschlossene_meetings?dir={{dir}}" style="color:black"><p  style="color: white">Optionen</p></a></th>
+                    {% for headName in headNames %}                    
+                        <th><a href="abgeschlossene_meetings?dir={{dir}}&sort={{headName}}" style="color:black"><p  style="color: white">{{ headName }}</p></a></th>                    
+                    {% endfor %}
                     </tr>
                 </thead>
                 <tbody>

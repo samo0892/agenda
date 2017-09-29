@@ -240,7 +240,7 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
 
         if ($userId) {
-            $headNames = array('Name','Date', 'Place', 'StartTime', 'Optionen');
+            $headNames = array('Name','Date', 'Place', 'StartTime', 'Options');
             $dir = isset($_GET['dir']) ? $_GET['dir'] : 'DESC';
             $sort = isset($_GET['sort']) ? $_GET['sort'] : '' ;
             
@@ -252,7 +252,9 @@ class FrontendController extends Controller {
             
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
 
-        
+            if($sort == 'Options'){
+                $sort = '';
+            }
             if($sort){
                 $query = $repository->createQueryBuilder("meeting")
                     ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
@@ -294,8 +296,9 @@ class FrontendController extends Controller {
         $userId = $session->get('id');
 
         if ($userId) {
+            $headNames = array('Name','Date', 'Place', 'Options');
             $dir = isset($_GET['dir']) ? $_GET['dir'] : 'DESC';
-            $sort = isset($_GET['sort']) ? $_GET['sort'] : 'date';
+            $sort = isset($_GET['sort']) ? $_GET['sort'] : '' ;
             
             if ($dir == "ASC") {
                 $dir = "DESC";
@@ -304,11 +307,14 @@ class FrontendController extends Controller {
             }
             
             $repository = $this->getDoctrine()->getRepository('AppBundle:Meeting');
+            if($sort == 'Options'){
+                $sort = '';
+            }
             if($sort){
                 $query = $repository->createQueryBuilder("meeting")
                     ->select('meeting.id', 'meeting.name', 'meeting.date', 'meeting.place', 'meeting.startTime')
                     ->where('meeting.isComplete = 1')
-                    ->orderBy("meeting." .$sort, $dir)
+                    ->orderBy("meeting." .lcfirst($sort), $dir)
                     ->getQuery();
             }else{
                 $query = $repository->createQueryBuilder("meeting")
@@ -331,7 +337,7 @@ class FrontendController extends Controller {
             
             
             
-            return $this->render('default/completed_meetings.html.twig', array('meetings' => $currentPageResults, 'dir' => $dir, 'sort' => $sort, 'my_pager' => $pagerfanta,));
+            return $this->render('default/completed_meetings.html.twig', array('meetings' => $currentPageResults, 'dir' => $dir, 'sort' => $sort, 'my_pager' => $pagerfanta, 'headNames' => $headNames));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }
