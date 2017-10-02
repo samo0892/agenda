@@ -116,11 +116,11 @@ class Meeting
     private $notice;
     
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Assert\File
      */
-    private $pdfFile = null;
+    private $pdfFile;
     
     public function __construct() {
         

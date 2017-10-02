@@ -37,29 +37,30 @@ class CreateMeetingType extends AbstractType {
                     'data' => ''
                 ))
                 ->add('date', DateType::class, array('label' => 'Datum',
-                    'placeholder' => array(
-                        'day' => 'Tag', 'month' => 'Monat', 'year' => 'Jahr'
-                    ),
-                    'format' => 'ddMMyyyy',
-                    'constraints' => array(
-                        new Assert\NotBlank(array(
-                            'message' => 'Feld darf nicht leer nicht sein'
-                                ))
-                    )
+                    'widget' => 'single_text',
+                    'html5' => false,
+                    'attr' => ['class' => 'js-datepicker form-control'],
+                    'format' => 'mm-dd-yyyy',
                 ))
                 ->add('startTime', TimeType::class, array('label' => 'Startzeit',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'
                                 ))
-                    )
+                    ),
+                    'widget' => 'choice',
+                    'hours' => ['7','8','9','10','11','12','13','14','15','16','1', '18'],
+                    'minutes' => ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
                 ))
                 ->add('endTime', TimeType::class, array('label' => 'Endzeit',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer nicht sein'
                                 ))
-                    )
+                    ), 
+                    'widget' => 'choice',
+                    'hours' => ['7','8','9','10','11','12','13','14','15','16','1', '18'],
+                    'minutes' => ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
                 ))
                 ->add('place', TextType::class, array('label' => 'Ort',
                     'constraints' => array(
@@ -84,7 +85,7 @@ class CreateMeetingType extends AbstractType {
                     ),
                 ))
                 
-                ->add('description', TextareaType::class, array('label' => 'Beschreibung des Meetings',
+                ->add('description', TextareaType::class, array('label' => 'Ziele des Meetings',
                     'constraints' => array(
                         new Assert\NotBlank(array(
                             'message' => 'Feld darf nicht leer sein'

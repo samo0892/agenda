@@ -369,6 +369,7 @@ class FrontendController extends Controller {
             $meeting_files = $fileRepo->findBy(['meeting' => $_GET['id']]);
             $meeting_name = $meeting->getName();
             $meeting_date = $meeting->getDate()->format('d.m.Y');
+            $meeting_description = $meeting->getDescription();
             
             $meeting_minutes = [];
             foreach($agendas as $agenda){
@@ -462,7 +463,7 @@ class FrontendController extends Controller {
             }
 
             return $this->render('default/started_meeting.html.twig', array('agendas' => $agendas, 'meeting_name' => $meeting_name, 'meeting_minutes' => $meeting_minutes, 
-                'meeting_files' => $meeting_files, 'form' => $form->createView(), 'meeting_id' => $meeting_id));
+                'meeting_files' => $meeting_files, 'form' => $form->createView(), 'meeting_id' => $meeting_id, 'meeting_description' => $meeting_description));
         } else {
             return $this->render('default/need_login.html.twig', array());
         }

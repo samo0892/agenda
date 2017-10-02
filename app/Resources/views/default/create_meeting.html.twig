@@ -1,15 +1,9 @@
 {% extends 'base.html.twig' %}
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 
-{% block head %}
-    
-    <title>{% block title %}Meeting erstellen{% endblock %}</title>
-    {% block jquery %}
-        <script src="https://code.jquery.com/jquery-latest.js"></script>
-        <script>
 
-        </script>
-    {% endblock %}
+{% block head %}   
+    <title>{% block title %}Meeting erstellen{% endblock %}</title>
 {% endblock %}
 
 {% block body %}
@@ -56,6 +50,13 @@
 
                             addAnAgenda();
                         });
+                       
+                        
+                        $('.js-datepicker').datepicker({ 
+                            format: 'mm/dd/yyyy',
+                            language: 'DE',
+                        });
+                        
                         
                         jQuery('#delete-agenda').click(function(e) {
                             e.preventDefault();

@@ -22,14 +22,20 @@ class NoticeType extends AbstractType
                 ->add('type', ChoiceType::class, array('label' => 'Art',
                     'choices'  => array(
                         'Aufgabe' => 'Aufgabe',
+                        'Beschluss' => 'Beschluss',
+                        'Information' => 'Information',
+                        'Empfehlung' => 'Empfehlung',
+                        'Feststellung' => 'Feststellung',                        
                     ),
                 ))
-                ->add('person', TextType::class, array('label' => 'Wer',))
+                ->add('person', TextType::class, array('label' => 'Wer',
+                    'required' => false))
                 ->add('date', DateType::class, array('label' => 'Bis',
                     'placeholder' => array(
                         'day' => 'Tag', 'month' => 'Monat', 'year' => 'Jahr'
                     ),
-                    'format' => 'ddMMyyyy',));
+                    'format' => 'ddMMyyyy',
+                    'required' => false));
     }
     
     public function configureOptions(OptionsResolver $resolver) {
