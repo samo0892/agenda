@@ -239,6 +239,7 @@ class FrontendController extends Controller {
         $session = $request->getSession();
         $userId = $session->get('id');
 
+            date_default_timezone_set('Europe/Berlin');
         if ($userId) {
             $headNames = array('Name','Date', 'Place', 'StartTime', 'Options');
             $dir = isset($_GET['dir']) ? $_GET['dir'] : 'DESC';
@@ -270,7 +271,6 @@ class FrontendController extends Controller {
             }
             
             $meetingFromDb = $query->execute(); //execute();
-            
             $page = $request->query->has("page") && intval($request->query->get("page")) > 1 ? intval($request->query->get("page")) : 1;
 
 
@@ -370,6 +370,7 @@ class FrontendController extends Controller {
             $meeting_name = $meeting->getName();
             $meeting_date = $meeting->getDate()->format('d.m.Y');
             $meeting_description = $meeting->getDescription();
+            $meeting_type = $meeting->getType();
             
             $meeting_minutes = [];
             foreach($agendas as $agenda){
@@ -419,7 +420,7 @@ class FrontendController extends Controller {
                     $this->renderView(
                         'pdf/pdf.html.twig', array(
                         'startedMeetings' => $sm, 'date' => $date, 'notice' => $notice, 'person' => $person, 'type' => $type,
-                        'meeting_name' => $meeting_name, 'meeting_date' => $meeting_date)
+                        'meeting_name' => $meeting_name, 'meeting_date' => $meeting_date, 'meeting_type' => $meeting_type)
                     ),
                     'uploads/pdf-files/' .$pdfFilename,
                     $pdfConfiguration,
@@ -442,7 +443,7 @@ class FrontendController extends Controller {
                             'emails/created_protocoll_mail.html.twig',
                             array('meeting_name' => $meeting_name,
                                 'meeting_date' => $meeting_date,
-                                'pdf_file' => $pdfFile)
+                                'pdf_file' => $pdfFile, 'meeting_type' => $meeting_type)
                         ),
                         'text/html'
                     );

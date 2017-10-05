@@ -39,7 +39,7 @@ class CreateMeetingType extends AbstractType {
                 ->add('date', DateType::class, array('label' => 'Datum',
                     'widget' => 'single_text',
                     'html5' => false,
-                    'attr' => ['class' => 'js-datepicker form-control'],
+                    'attr' => ['class' => 'js-datepicker'],
                     'format' => 'mm-dd-yyyy',
                 ))
                 ->add('startTime', TimeType::class, array('label' => 'Startzeit',
@@ -49,7 +49,7 @@ class CreateMeetingType extends AbstractType {
                                 ))
                     ),
                     'widget' => 'choice',
-                    'hours' => ['7','8','9','10','11','12','13','14','15','16','1', '18'],
+                    'hours' => ['7','8','9','10','11','12','13','14','15','16','17', '18'],
                     'minutes' => ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
                 ))
                 ->add('endTime', TimeType::class, array('label' => 'Endzeit',

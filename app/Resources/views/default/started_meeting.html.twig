@@ -25,13 +25,16 @@
     
     {{ form_start(form) }}
         <div class="col-md-4">
-            <h3>Notizen zum Meeting</h3>
+            
+            <h3><a href="#" id="sobo-einausblenden">Notizen zum Meeting</a></h3>
+            <div id="meetingNotice">
             <p id="email-fields-list" data-prototype="{{ form_widget(form.notice.vars.prototype)|e }}">
                 {% for noticeField in form.notice %}
                     <td>{{ form_errors(noticeField) }}</td>
                     {{ form_widget(noticeField) }}
                 {% endfor %}
             </p>    
+             </div>
             <a href="#" id="add-another-email" class="btn btn-default">Notiz hinzufügen</a>
             <br />
             <br />
@@ -39,6 +42,7 @@
             <br />    
             <br />
             {{ form_row(form.save) }}
+           
         </div>
     {{ form_end(form) }}
     <div class="col-md-4">
@@ -46,7 +50,7 @@
         <br />
         {% if meeting_files %}
             {% for meeting_file in meeting_files  %}
-                <a href="{{meeting_file.path}}"><b>{{meeting_file.name}}</b></a><br />
+                <a href="{{ asset('brochures_directory/') }}{{meeting_file.name}}" target="_blank"><b>{{meeting_file.name}}</b></a><br />
             {% endfor %}
         {% else %}
             <p>Für dieses Meeting sind keine Dateien vorhanden.</p>
@@ -62,7 +66,10 @@
         
         var emailCount = '{{ form.notice|length }}';
         
-       
+            $('.js-datepicker').datepicker({ 
+                            format: 'mm/dd/yyyy',
+                            language: 'DE',
+                        });
 
             addAnAgenda();
 
@@ -71,6 +78,11 @@
 
                 addAnAgenda();
             });
+            
+            /* Hier der jQuery-Code */
+            $('#sobo-einausblenden').click(function(){
+                $('#meetingNotice').toggle();
+            })
 
             function addAnAgenda() {
                 var emailList = jQuery('#email-fields-list');

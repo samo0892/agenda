@@ -34,10 +34,11 @@
                 <tbod>
                     {% for meeting in meetings %}
                         <tr>
+                            {% dump(meeting) %}
                             <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.name }}</a></td>
                             <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.date|date('d-m-Y') }}</a></td>
                             <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.place }}</a></td>
-                            <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.startTime|date('H:m') }}</a></td>
+                            <td><a href="details?id={{meeting.id}}" style="color:black">{{ meeting.startTime|date("H:i") }}</a></td>
                             <td><a onclick="return confirmSubmit()" href="loeschen?id={{meeting.id}}"><button type="button" class="btn btn-danger">Löschen</button></a>  
                             <a onclick="return confirmSubmit()" href="meeting_starten?id={{meeting.id}}"><button type="button" class="btn btn-success">Starten</button></a></td>
                         </tr>

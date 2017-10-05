@@ -28,10 +28,13 @@ class EmailService
      * @param type $mailBody
      * @return boolean
      */
-    public function sendHtmlEmail($subject, $mailBody, $sendto, $fileName)
+    public function sendHtmlEmail($subject, $mailBody, $sendto, $fileName, $fileArray)
     {
         $recipients = preg_split("/[;,]+/", $sendto);
-        
+        foreach($fileArray as $pdfFile){
+            $fileNames[] = $pdfFile->getName();
+        }
+//        dump($fileNames);
         foreach ($recipients as $recipient) {
             $message = \Swift_Message::newInstance()
                     ->setSubject($subject)
@@ -39,7 +42,12 @@ class EmailService
                     ->setTo($recipient)
                     ->setBody($mailBody)
                     ->attach(\Swift_Attachment::fromPath($fileName, 'text/calendar'));
-
+                    foreach($fileNames as $fileNa){
+                       $message->attach(\Swift_Attachment::fromPath($fileNa, 'application/pdf'));
+//                       dump($message);
+                    }
+//die; 
+//                    dump($message);die;
             $mailer = $this->mailer->send($message);
         }
         
@@ -104,7 +112,7 @@ class EmailService
         $subject = "Ein neues Meeting wurde erstellt";
         $sendTo = $form->get('emails')->getData();
 
-        $sendThisMail = $this->sendHtmlEmail($subject, $mailBody, $sendTo, $tmpFolder);
+        $sendThisMail = $this->sendHtmlEmail($subject, $mailBody, $sendTo, $tmpFolder, $fileArray);
         
         return $sendThisMail;
     }
