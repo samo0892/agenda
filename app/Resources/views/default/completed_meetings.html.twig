@@ -23,9 +23,9 @@
     
     {% if meetings %}
         <div class="col-md-8">
-            <table border="1" align="center" class="table table-bordered table-hover" style="margin-left: 50px; margin-right: 50px">
+            <table border="1" align="center" class="table table-bordered table-hover" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
                 <thead style="background-color: black">
-                    <tr>
+                    <tr style="height: 25%; font-size: 180px;">
                     {% for headName in headNames %}                    
                         <th><a href="abgeschlossene_meetings?dir={{dir}}&sort={{headName}}" style="color:black"><p  style="color: white">{{ headName }}</p></a></th>                    
                     {% endfor %}
@@ -47,7 +47,9 @@
             </table>
             <br />
             <div class="pagerfanta" align="center">
+            {% if  pagerfanta(my_pager) != 0 %}
                 {{ pagerfanta(my_pager) }}
+            {% endif %}
             </div>
         </div>
     {% endif %}

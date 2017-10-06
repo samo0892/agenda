@@ -10,13 +10,20 @@
 <br />
 <br />
 <h3>Ziele des Meetings: {{ meeting_description }}</h3>
+<hr style='color: black' />
 <div class="row">
     <div class="col-md-4">
         <br />
         <h3>Agendapunkte</h3>
         <div id = "countdownExample">
             {% for agenda in agendas %}
-                <h4><td>Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (60000*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span></td><br /></h4>
+                <h4>
+                    <td>
+                        <div id="agenda_{{loop.index}}" class="test" data-aid="{{ loop.index }}">
+                            Agendapunkt: {{ agenda.name }}   Minuten: <span class="values" data-time="{{ (60000*agenda.minutes) }}" id="time_{{ loop.index }}" data-tid="{{ loop.index }}">{{ agenda.minutes }}</span>
+                        </div>
+                    </td><br />
+                </h4>
             {% endfor %}
         </div>
         <br />
@@ -38,13 +45,13 @@
             <a href="#" id="add-another-email" class="btn btn-default">Notiz hinzufügen</a>
             <br />
             <br />
-    {#        <td><a onclick="return confirmSubmit()" href="pdf?id={{meeting_id}}"><button type="button" class="btn btn-danger">Speichern</button></a>  #}
             <br />    
             <br />
             {{ form_row(form.save) }}
            
         </div>
     {{ form_end(form) }}
+    
     <div class="col-md-4">
         <h3>Dokumente</h3> 
         <br />
@@ -124,7 +131,7 @@
                                 t.time = Number(timer_up.split(':')[0]) * 60 + Number(timer_up.split(':') [1]) * 1000;
                                 timer_up = '';
                                 $('.active').css("color", "red");
-                                $('.active').css("font-size", "25px");
+                                $('.activen').css("font-size", "30px");
                                 t.time = t.time + 15;
                                 if (t.time >= 0) {
                                     t.show();
@@ -135,7 +142,7 @@
                             } else {
                                 setCookie(t.id + '_up', $('.active').text(), 1);
                                 $('.active').css("color", "red");
-                                $('.active').css("font-size", "25px");
+                                $('.activen').css("font-size", "30px");
                                 t.time = t.time + 15;
                                 if (t.time >= 0) {
                                     t.show();
@@ -150,7 +157,7 @@
                             if(timer_down){
                                 
                                 
-                                $('.active').css("font-size", "25px");
+                                $('.activen').css("font-size", "30px");
                                 t.time = t.time - 15;
                                 if (t.time >= 0) {
                                     t.show();
@@ -160,7 +167,7 @@
                             } else {
                                 console.log('AAA');
                                 setCookie(t.id +'_down', $('.active').text(), 1);
-                                $('.active').css("font-size", "25px");
+                                $('.activen').css("font-size", "30px");
                                 t.time = t.time - 15;
                                 if (t.time >= 0) {
                                     t.show();
@@ -234,14 +241,20 @@
                 setCookie(t.id +'_down', 0, 1);
                 var objectId = $('.active').data('tid') + 1;
                 var timerId = $('.active').data('tid') - 1;
+                var agendaObjectId = $('.activen').data('aid') + 1;
+                var agendaId = $('.activen').data('aid') - 1;
+                $('.activen').css("font-size", "20px");
                 $('.active').removeClass('active');
+                $('.activen').removeClass('activen');
                 $('#time_' + objectId).addClass('active');
+                $('#agenda_' + agendaObjectId).addClass('activen');
                 console.log(objectId + ' : ' + timerId);
                 timers[timerId].stop();
             });
 
         });
 
+        $('#agenda_1').addClass('activen');
         $('#time_1').addClass('active');
         timers[0].countdown();
 
